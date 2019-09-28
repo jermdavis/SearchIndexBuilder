@@ -1,20 +1,30 @@
-# Search Index Builder
+<pre>
+  _____                     _     _____           _           ____        _ _     _           
+ / ____|                   | |   |_   _|         | |         |  _ \      (_) |   | |          
+| (___   ___  __ _ _ __ ___| |__   | |  _ __   __| | _____  _| |_) |_   _ _| | __| | ___ _ __ 
+ \___ \ / _ \/ _` | '__/ __| '_ \  | | | '_ \ / _` |/ _ \ \/ /  _ <| | | | | |/ _` |/ _ \ '__|
+ ____) |  __/ (_| | | | (__| | | |_| |_| | | | (_| |  __/>  <| |_) | |_| | | | (_| |  __/ |   
+|_____/ \___|\__,_|_|  \___|_| |_|_____|_| |_|\__,_|\___/_/\_\____/ \__,_|_|_|\__,_|\___|_|   
 
+</pre>
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 If you've dealt with older Sitecore projects that use large search indexes, then you've almost certainly hit the
 issue of "My search index rebuild takes so long, that the IIS process recycles before it finishes"...
 
-This tool tries to help with that by running the indexing operation from outside the ASP.Net website process. If
+This tool tries to help with that by managing the indexing operation from outside the ASP.Net website process. If
 something causes the web app to recycle, this tool will detect the error and back off before retrying and continuing
 the process. You can also stop the process and restart it later if necessary.
 
-Build the console application here, and then make use of the options it provides...
+This hasn't been exhaustively tested, as it was something I hacked together to help with a work problem. But it's been
+tried against both Solr and Lucene indexes, with Sitecore v7.1, v7.2 & v9.0 - but in theory it should work with V7.0 and up.
+
+Grab a [release](/jermdavis/SearchIndexBuilder/releases) and then make use of the options it provides...
 
 ## Step 1: Deploying the endpoint
 
 The first step in running the tool is to deploy the special endpoint it uses into your sitecore application. The tool can
-do this with the "`Deploy`" verb:
+do this with the `Deploy` verb:
 
 `SearchIndexBuilder.App.exe Deploy -w <your website folder> [-o] [-t <token>]` 
 
@@ -53,7 +63,7 @@ The parameters are:
   using this option, as a query like `\\*` will potentially process many thousands of items. e.g. `-q "/sitecore/Content/*//[@@templatename='Homepage']"`
 * `-c` / `-config` (Optional, string) : By default the tool will write the results of this operation to a file called `config.json` in the current folder.
   If you want to write to a different name or location, specify it with this parameter. e.g. `-c mySite.json`
-* `-o` / `-overwrite` (Optional) : By default the tool will not overwrite an existing endpoint file if one is found. If you do want
+* `-o` / `-overwrite` (Optional) : By default the tool will not overwrite an existing config file if one is found. If you do want
   to overwrite the existing file, add this parameter.
 
 The config file will include all the Sitecore indexes defined on your site by default. If you only want to build certain indexes, use a text editor to
@@ -69,7 +79,7 @@ you have specified.
 
 The parameters are:
 
-* `-c` / `-config` (Optional, string) : The tool will try to load configuration from a file name `config.json` in the current directoy by default. If you want to use
+* `-c` / `-config` (Optional, string) : The tool will try to load configuration from a file named `config.json` in the current directoy by default. If you want to use
   a different config file, specifiy it with this parameter. e.g. `-c ..\testing\mySite.json`
 * `-o` / `-outputEvery` (Optional, integer) : The code tries to estimate the time remaining for the rebuild operation by using a rolling average over the last 50 items that
   have been processed. This flag specifies how often the estimates should be displayed on the screen. It defaults to once every 10 items processed. e.g. `-o 35`
@@ -80,7 +90,7 @@ The parameters are:
   parameter to add a pause between each item indexing request. The value is in milliseconds. e.g. `-p 250`
 
 You can stop the tool safely with `Ctrl-C`. It will finish its current operation, and then end. The current state (specifically what items are left to process, and what errors
-have been recorded - both transient and permenant) will be written to disk. The filenames will be in the form "errors-<date>-<time>-<config>.json" and "backup-<date>-<time>-<config>.json"
+have been recorded - both transient and permenant) will be written to disk. The filenames will be in the form `errors-<date>-<time>-<config>.json` and `backup-<date>-<time>-<config>.json`
 and you can re-start the process later by passing the "backup" config file written here into the tool with `-c`.
 
 The error data is also saved to disk when the tool finishes normally - giving a record of items which caused problems.
