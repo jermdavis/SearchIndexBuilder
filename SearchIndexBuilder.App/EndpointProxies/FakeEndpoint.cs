@@ -41,7 +41,7 @@ namespace SearchIndexBuilder.App.EndpointProxies
                 return false;
             }
 
-            if(rnd == 7)
+            if(rnd == 3)
             {
                 throw new ArgumentException("Error", new Exception("Something broke!"));
             }

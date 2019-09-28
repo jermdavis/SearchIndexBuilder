@@ -10,7 +10,10 @@ namespace SearchIndexBuilder.App.Processors.Setup
     {
         public static void RunSetup(SetupOptions options, ISitecoreEndpointFactory endpointFactory)
         {
-            if(File.Exists(options.ConfigFile) && options.Overwrite == false)
+            Console.WriteLine("Writing configuration");
+            Console.WriteLine("---------------------");
+
+            if (File.Exists(options.ConfigFile) && options.Overwrite == false)
             {
                 Console.WriteLine($"Config file {options.ConfigFile} exists.");
                 Console.WriteLine($"Overwrite not specified so file will not be overwritten");
@@ -25,10 +28,31 @@ namespace SearchIndexBuilder.App.Processors.Setup
 
             ISitecoreEndpoint endPoint = endpointFactory.Create(options.Url);
 
-            cfg.Indexes = endPoint.FetchIndexes(cfg.Token).ToArray();
-            cfg.Items = endPoint.FetchItemIds(cfg.Token, options.Database, options.Query);
+            string data;
+            try
+            {
+                cfg.Indexes = endPoint.FetchIndexes(cfg.Token).ToArray();
+                cfg.Items = endPoint.FetchItemIds(cfg.Token, options.Database, options.Query);
 
-            var data = Newtonsoft.Json.JsonConvert.SerializeObject(cfg, Newtonsoft.Json.Formatting.Indented);
+                data = Newtonsoft.Json.JsonConvert.SerializeObject(cfg, Newtonsoft.Json.Formatting.Indented);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Exception caught from endpoint while extracting setup data:");
+                while(ex != null)
+                {
+                    Console.WriteLine($"{ex.GetType().Name}: {ex.Message}");
+                    //if(ex is System.Net.WebException)
+                    //{
+                    //    var s = (ex as System.Net.WebException).Response.GetResponseStream();
+                    //    var sr = new StreamReader(s);
+                    //    Console.WriteLine(sr.ReadToEnd());
+                    //}
+                    ex = ex.InnerException;
+                }
+
+                return;
+            }
 
             using (var file = File.CreateText(options.ConfigFile))
             {

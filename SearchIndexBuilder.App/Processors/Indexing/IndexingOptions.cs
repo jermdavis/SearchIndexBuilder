@@ -14,6 +14,9 @@ namespace SearchIndexBuilder.App.Processors.Indexing
 
         [Option('r', "retries", Required = false, HelpText = "How many times to retry an item before considering it failed")]
         public int Retries { get; set; } = 5;
+
+        [Option('p', "pause", Required = false, HelpText = "To throttle the effect of the index build on your server, pause for this number of ms between operations.")]
+        public int Pause { get; set; } = 0;
     }
 
 }

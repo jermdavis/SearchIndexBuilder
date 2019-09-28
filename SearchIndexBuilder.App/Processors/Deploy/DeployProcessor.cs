@@ -29,6 +29,9 @@ namespace SearchIndexBuilder.App.Processors.Deploy
 
         public static void RunDeploy(DeployOptions options)
         {
+            Console.WriteLine("Deploying endpoint");
+            Console.WriteLine("------------------");
+
             var file = Constants.EndpointFile;
             var fileName = Path.Combine(options.Website, file);
 

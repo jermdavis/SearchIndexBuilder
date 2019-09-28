@@ -14,9 +14,17 @@ namespace SearchIndexBuilder.App.Processors
             _size = size;
         }
 
-        public void Record(TimeSpan time)
+        public void Record(TimeSpan time, int pauseMs = 0)
         {
-            _times.Enqueue(time);
+            if(pauseMs > 0)
+            {
+                _times.Enqueue(time+ TimeSpan.FromMilliseconds(pauseMs));
+            }
+            else
+            {
+                _times.Enqueue(time);
+            }
+
             while (_times.Count > _size)
             {
                 _times.Dequeue();

@@ -13,16 +13,14 @@ namespace SearchIndexBuilder.App
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("SearchIndexBuilder");
-            Console.WriteLine("------------------");
+            Console.WriteLine(@"  _____                     _     _____           _           ____        _ _     _           ");
+            Console.WriteLine(@" / ____|                   | |   |_   _|         | |         |  _ \      (_) |   | |          ");
+            Console.WriteLine(@"| (___   ___  __ _ _ __ ___| |__   | |  _ __   __| | _____  _| |_) |_   _ _| | __| | ___ _ __ ");
+            Console.WriteLine(@" \___ \ / _ \/ _` | '__/ __| '_ \  | | | '_ \ / _` |/ _ \ \/ /  _ <| | | | | |/ _` |/ _ \ '__|");
+            Console.WriteLine(@" ____) |  __/ (_| | | | (__| | | |_| |_| | | | (_| |  __/>  <| |_) | |_| | | | (_| |  __/ |   ");
+            Console.WriteLine(@"|_____/ \___|\__,_|_|  \___|_| |_|_____|_| |_|\__,_|\___/_/\_\____/ \__,_|_|_|\__,_|\___|_|   ");
             Console.WriteLine();
 
-            var parser = new CommandLine.Parser(s => {
-                s.AutoHelp = true;
-                s.CaseSensitive = false;
-            });
-
-            //var endpointFactory = new FakeEndpointFactory();
             var endpointFactory = new SitecoreWebEndpointFactory();
 
             CommandLine.Parser.Default

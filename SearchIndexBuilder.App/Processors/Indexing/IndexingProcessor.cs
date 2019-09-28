@@ -11,6 +11,9 @@ namespace SearchIndexBuilder.App.Processors.Indexing
     {
         public static void RunProcess(IndexingOptions options, ISitecoreEndpointFactory endpointFactory)
         {
+            Console.WriteLine("Running indexing");
+            Console.WriteLine("----------------");
+
             OperationConfig cfg;
 
             if (!System.IO.File.Exists(options.ConfigFile))
@@ -37,10 +40,10 @@ namespace SearchIndexBuilder.App.Processors.Indexing
 
             var endTime = DateTime.Now;
 
-            Console.WriteLine("Finished");
-            Console.WriteLine($" at {endTime} - after {endTime-startTime}");
+            Console.WriteLine(">>Finished");
+            Console.WriteLine($">> at {endTime} - after {endTime-startTime}");
 
-            Console.WriteLine($" with {state.Errors.Count()} errors");
+            Console.WriteLine($">> with {state.Errors.Count()} errors");
             foreach (var err in state.Errors)
             {
                 Console.WriteLine(err);
@@ -60,18 +63,23 @@ namespace SearchIndexBuilder.App.Processors.Indexing
                 var percentage = (float)totalProcessed / (float)total * 100;
 
                 Console.WriteLine();
-                Console.WriteLine($"{processed} done. {totalProcessed}/{total}. ({percentage:0.00}%) Time: {state.Average.CurrentAverage().TotalMilliseconds}ms");
+                Console.WriteLine($">>{processed} done. {totalProcessed}/{total}. ({percentage:0.00}%) Time: {state.Average.CurrentAverage().TotalMilliseconds}ms");
 
-                var ticksPerItem = state.Average.CurrentAverage().Ticks / processed;
+                var ticksPerItem = processed > 0 ? state.Average.CurrentAverage().Ticks / processed : state.Average.CurrentAverage().Ticks;
                 var estimatedRemaining = new TimeSpan(ticksPerItem * (total - totalProcessed));
 
-                Console.WriteLine($"Estimated remaining: {estimatedRemaining} - end at {DateTime.Now + estimatedRemaining}");
+                Console.WriteLine($">>Estimated remaining: {estimatedRemaining} - end at {DateTime.Now + estimatedRemaining}");
                 Console.WriteLine();
 
                 if(cancelWasTriggered)
                 {
                     backupState(state);
                 }
+            }
+
+            if(!cancelWasTriggered)
+            {
+                backupErrors(DateTime.Now, state);
             }
         }
 
@@ -88,15 +96,20 @@ namespace SearchIndexBuilder.App.Processors.Indexing
                 var data = Newtonsoft.Json.JsonConvert.SerializeObject(state.Config, Newtonsoft.Json.Formatting.Indented);
                 file.WriteLine(data);
             }
-            Console.WriteLine($"-- Saved updated config state for restart to {configFile}");
+            Console.WriteLine($">>Saved updated config state for restart to {configFile}");
 
+            backupErrors(now, state);
+        }
+
+        private static void backupErrors(DateTime now, ProcessState state)
+        {
             var errorFile = $"errors-{now.ToString("yyyyMMdd-hhmm")}-{state.Options.ConfigFile}";
             using (var file = System.IO.File.CreateText(errorFile))
             {
                 var data = Newtonsoft.Json.JsonConvert.SerializeObject(state.Errors, Newtonsoft.Json.Formatting.Indented);
                 file.WriteLine(data);
             }
-            Console.WriteLine($"-- Saved error state to {errorFile}");
+            Console.WriteLine($">>Saved error state to {errorFile}");
         }
 
         private static int processGroup(ProcessState state, out bool cancelWasTriggered)
@@ -105,7 +118,7 @@ namespace SearchIndexBuilder.App.Processors.Indexing
             bool cancelTriggered = false;
 
             Console.CancelKeyPress += (sender, args) => {
-                Console.WriteLine("--> Cancel triggered! Tidying up... <--");
+                Console.WriteLine(">>Cancel triggered! Finishing current operation and tidying up...");
                 cancelTriggered = true;
                 args.Cancel = true;
             };
@@ -121,7 +134,7 @@ namespace SearchIndexBuilder.App.Processors.Indexing
                 bool result = processItem(state, itm);
 
                 state.sw.Stop();
-                state.Average.Record(state.sw.Elapsed);
+                state.Average.Record(state.sw.Elapsed, state.Options.Pause);
 
                 handleResult(result, state, itm, ref retries, ref processed);
 
@@ -129,6 +142,12 @@ namespace SearchIndexBuilder.App.Processors.Indexing
                 {
                     cancelWasTriggered = true;
                     break;
+                }
+
+                if (result == true && cancelTriggered == false && state.Options.Pause > 0)
+                {
+                    Console.WriteLine($">>Pausing for {state.Options.Pause}ms");
+                    System.Threading.Thread.Sleep(state.Options.Pause);
                 }
             } while (processed < state.Options.OutputEvery && state.Items.Count > 0);
 
@@ -145,13 +164,13 @@ namespace SearchIndexBuilder.App.Processors.Indexing
 
                 if (result == false)
                 {
-                    state.Errors.Add($"WARN: {itm.Id} [{itm.Name}] Indexing error");
+                    state.Errors.Add($">>WARN: {itm.Id} [{itm.Name}] Indexing error");
                 }
             }
             catch (Exception ex)
             {
                 result = false;
-                state.Errors.Add($"WARN: {itm.Id} [{itm.Name}] {formatException(ex)}");
+                state.Errors.Add($">>WARN: {itm.Id} [{itm.Name}] {formatException(ex)}");
             }
 
             return result;
@@ -167,13 +186,13 @@ namespace SearchIndexBuilder.App.Processors.Indexing
                     processed += 1;
                     state.Items.Dequeue();
 
-                    state.Errors.Add($"ERR:  {itm.Id} - Too many retries - aborting");
-                    Console.WriteLine($"- {itm.Id} {itm.Name} -- {state.sw.Elapsed.TotalMilliseconds}ms -- Too many retries");
+                    state.Errors.Add($">>ERR:  {itm.Id} - Too many retries - aborting");
+                    Console.WriteLine($"{itm.Id} {itm.Name} -- {state.sw.Elapsed.TotalMilliseconds}ms -- Too many retries");
                 }
                 else
                 {
                     retries += 1;
-                    Console.WriteLine($"- {itm.Id} {itm.Name} -- {state.sw.Elapsed.TotalMilliseconds}ms -- Warning #{retries}");
+                    Console.WriteLine($"{itm.Id} {itm.Name} -- {state.sw.Elapsed.TotalMilliseconds}ms -- Warning #{retries}");
                     randomBackOff(retries);
                 }
             }
@@ -185,7 +204,7 @@ namespace SearchIndexBuilder.App.Processors.Indexing
                     msg = " - Transient error corrected";
                 }
 
-                Console.WriteLine($"- {itm.Id} {itm.Name} -- {state.sw.Elapsed.TotalMilliseconds}ms{msg}");
+                Console.WriteLine($"{itm.Id} {itm.Name} -- {state.sw.Elapsed.TotalMilliseconds}ms{msg}");
                 state.Items.Dequeue();
                 processed += 1;
                 retries = 0;
@@ -198,7 +217,7 @@ namespace SearchIndexBuilder.App.Processors.Indexing
         {
             // add random component to back off?
             int msToWait = 1000 + (1000 * (errorCount * errorCount));
-            Console.WriteLine($"-- Backing off for {msToWait}ms");
+            Console.WriteLine($">>Backing off for {msToWait}ms");
             System.Threading.Thread.Sleep(msToWait);
         }
 

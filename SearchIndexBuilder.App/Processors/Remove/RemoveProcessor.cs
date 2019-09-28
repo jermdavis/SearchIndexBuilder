@@ -12,6 +12,9 @@ namespace SearchIndexBuilder.App.Processors.Remove
     {
         public static void RunRemove(RemoveOptions options)
         {
+            Console.WriteLine("Removing endpoint");
+            Console.WriteLine("-----------------");
+
             var file = Constants.EndpointFile;
             var fileName = Path.Combine(options.Website, file);
 

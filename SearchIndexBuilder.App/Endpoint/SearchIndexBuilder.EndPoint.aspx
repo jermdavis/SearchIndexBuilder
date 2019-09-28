@@ -162,52 +162,16 @@
 
     private class Logger
     {
-        private StringBuilder _result = new StringBuilder();
+        private List<object> _items = new List<object>();
 
         public void FlushActivity(Activity a)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("{");
-
-            sb.Append("uri:\"" + a.Uri + "\"");
-            sb.Append(",idx:\"" + a.Index + "\"");
-
-            if(a.Messages != null)
-            {
-                sb.Append(",msg:[");
-                bool first = true;
-                foreach(var msg in a.Messages)
-                {
-                    if(!first)
-                    {
-                        sb.Append(",");
-                    }
-                    first = false;
-                    sb.Append("\"" + msg + "\"");
-                }
-                sb.Append("]");
-            }
-
-            if(!string.IsNullOrWhiteSpace(a.Error))
-            {
-                sb.Append(",err:\"" + a.Error + "\"");
-            }
-
-            sb.Append("}");
-
-            if(_result.Length > 0)
-            {
-                _result.Append(",");
-            }
-            _result.Append(sb.ToString());
+            _items.Add(new { uri = a.Uri, idx = a.Index, msg = a.Messages, err = a.Error });
         }
 
         public string Flush()
         {
-            var result = "[" + _result.ToString() + "]";
-            _result.Clear();
-
-            return result;
+            return Newtonsoft.Json.JsonConvert.SerializeObject(_items);
         }
     }
 
