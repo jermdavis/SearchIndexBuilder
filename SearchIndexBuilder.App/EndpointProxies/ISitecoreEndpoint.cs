@@ -6,10 +6,10 @@ namespace SearchIndexBuilder.App.EndpointProxies
 
     public interface ISitecoreEndpoint
     {
-        IEnumerable<string> FetchDatabases();
-        IEnumerable<ItemEntry> FetchItemIds(string database, string query);
-        IEnumerable<string> FetchIndexes();
-        bool IndexItem(Guid id, string databaseName, IEnumerable<string> indexes);
+        IEnumerable<string> FetchDatabases(string token);
+        IEnumerable<ItemEntry> FetchItemIds(string token, string database, string query);
+        IEnumerable<string> FetchIndexes(string token);
+        bool IndexItem(string token, Guid id, string databaseName, IEnumerable<string> indexes);
     }
 
 }

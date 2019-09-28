@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 
-namespace SearchIndexBuilder.App.CommandLineOptions
+namespace SearchIndexBuilder.App.Processors.Setup
 {
 
     [Verb("Setup", HelpText = "Fetches config data for a rebuild operation from a target server")]
@@ -17,6 +17,12 @@ namespace SearchIndexBuilder.App.CommandLineOptions
 
         [Option('c', "config", Required = false, HelpText = "The file to write the config json to")]
         public string ConfigFile { get; set; } = "config.json";
+
+        [Option('t', "token", Required = true, HelpText = "Specify a security token to use when talking to the endpoint")]
+        public string Token { get; set; }
+
+        [Option('o', "overwrite", Required = false, HelpText = "If the config file exists, should it be overwritten?")]
+        public bool Overwrite { get; set; } = false;
     }
 
 }

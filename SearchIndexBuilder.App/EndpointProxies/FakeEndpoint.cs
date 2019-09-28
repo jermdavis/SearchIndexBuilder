@@ -8,17 +8,17 @@ namespace SearchIndexBuilder.App.EndpointProxies
     {
         private Random _rnd = new Random();
 
-        public IEnumerable<string> FetchDatabases()
+        public IEnumerable<string> FetchDatabases(string token)
         {
             return new string[] { "master", "web" };
         }
 
-        public IEnumerable<string> FetchIndexes()
+        public IEnumerable<string> FetchIndexes(string token)
         {
             return new string[] { "sitecore_master_index", "sitecore_web_index" };
         }
 
-        public IEnumerable<ItemEntry> FetchItemIds(string database, string query)
+        public IEnumerable<ItemEntry> FetchItemIds(string token, string database, string query)
         {
             return new ItemEntry[] {
                 new ItemEntry() { Name="one", Id=Guid.NewGuid() },
@@ -30,7 +30,7 @@ namespace SearchIndexBuilder.App.EndpointProxies
             };
         }
 
-        public bool IndexItem(Guid id, string databaseName, IEnumerable<string> indexes)
+        public bool IndexItem(string token, Guid id, string databaseName, IEnumerable<string> indexes)
         {
             System.Threading.Thread.Sleep(50 + _rnd.Next(250));
 

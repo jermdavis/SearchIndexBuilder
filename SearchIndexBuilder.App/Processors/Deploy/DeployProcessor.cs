@@ -1,5 +1,4 @@
-﻿using SearchIndexBuilder.App.CommandLineOptions;
-using System;
+﻿using System;
 using System.IO;
 using System.Reflection;
 
@@ -19,13 +18,38 @@ namespace SearchIndexBuilder.App.Processors.Deploy
             }
         }
 
+        private static void updateResourceFileWithToken(string fileName, string token)
+        {
+            string data = File.ReadAllText(fileName);
+
+            data = data.Replace("%%SECURITY_TOKEN%%", token);
+
+            File.WriteAllText(fileName, data);
+        }
+
         public static void RunDeploy(DeployOptions options)
         {
-            var file = "SearchIndexBuilder.EndPoint.aspx";
+            var file = Constants.EndpointFile;
             var fileName = Path.Combine(options.Website, file);
+
+            if(File.Exists(fileName) && options.Overwrite == false)
+            {
+                Console.WriteLine($"The endpoint file already exists at {options.Website} and overwrite not allowed.");
+                Console.WriteLine("It will not be delployed.");
+                return;
+            }
+
             writeResourceToFile($"SearchIndexBuilder.App.Endpoint.{file}", fileName);
 
+            if (string.IsNullOrWhiteSpace(options.Token))
+            {
+                options.Token = Guid.NewGuid().ToString();
+            }
+
+            updateResourceFileWithToken(fileName, options.Token);
+
             Console.WriteLine($"Deploying {file} to {options.Website}");
+            Console.WriteLine($"Security token is: {options.Token}");
         }
     }
 

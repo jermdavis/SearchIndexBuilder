@@ -1,5 +1,4 @@
-﻿using SearchIndexBuilder.App.CommandLineOptions;
-using SearchIndexBuilder.App.EndpointProxies;
+﻿using SearchIndexBuilder.App.EndpointProxies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -142,7 +141,7 @@ namespace SearchIndexBuilder.App.Processors.Indexing
 
             try
             {
-                result = state.Endpoint.IndexItem(itm.Id, state.Config.Database, state.Config.Indexes);
+                result = state.Endpoint.IndexItem(state.Config.Token, itm.Id, state.Config.Database, state.Config.Indexes);
 
                 if (result == false)
                 {

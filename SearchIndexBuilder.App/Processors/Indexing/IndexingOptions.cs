@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 
-namespace SearchIndexBuilder.App.CommandLineOptions
+namespace SearchIndexBuilder.App.Processors.Indexing
 {
 
     [Verb("Index", HelpText = "Runs the index update defined in config")]

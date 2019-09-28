@@ -1,9 +1,18 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" %>
 <%@ Import Namespace="Sitecore.ContentSearch" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="System.Web" %>
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
+        string token = Request["t"];
+
+        if(token != @"%%SECURITY_TOKEN%%")
+        {
+            noCommandResponse();
+            return;
+        }
+
         string cmd = Request["cmd"];
 
         if(string.IsNullOrWhiteSpace(cmd))
@@ -33,68 +42,80 @@
 
     private void noCommandResponse()
     {
-        Response.Write("SearchIndexBuilder.Endpoint");
+        Response.Write(DateTime.Now.ToString());
     }
 
     private void indexesResponse()
     {
-        StringBuilder response = new StringBuilder();
+        var data = ContentSearchManager.Indexes
+            .Select(i => i.Name);
 
-        foreach (var idx in ContentSearchManager.Indexes)
-        {
-            if(response.Length > 0)
-            {
-                response.Append(',');
-            }
-
-            response.Append('"');
-            response.Append(idx.Name);
-            response.Append('"');
-        }
+        var response = Newtonsoft.Json.JsonConvert.SerializeObject(data);
 
         Response.ContentType = "application/json";
         Response.ContentEncoding = Encoding.UTF8;
-        Response.Write("["+response.ToString()+"]");
+        Response.Write(response);
     }
 
     private void dbsResponse()
     {
-        StringBuilder response = new StringBuilder();
+        var data = Sitecore.Configuration.Factory.GetDatabaseNames();
 
-        foreach (var db in Sitecore.Configuration.Factory.GetDatabaseNames())
-        {
-            if (response.Length > 0)
-            {
-                response.Append(',');
-            }
-
-            response.Append('"');
-            response.Append(db);
-            response.Append('"');
-        }
+        var response = Newtonsoft.Json.JsonConvert.SerializeObject(data);
 
         Response.ContentType = "application/json";
         Response.ContentEncoding = Encoding.UTF8;
-        Response.Write("[" + response.ToString() + "]");
+        Response.Write(response);
     }
 
     private void itemsResponse()
     {
         var dbName = Request["db"];
 
-        if(string.IsNullOrWhiteSpace(dbName))
+        if (string.IsNullOrWhiteSpace(dbName))
         {
             noCommandResponse();
             return;
         }
 
+        var query = Request["q"];
+        if (string.IsNullOrEmpty(query))
+        {
+            fetchFromDb(dbName);
+        }
+        else
+        {
+            query = HttpUtility.UrlDecode(query);
+            fetchFromQuery(dbName, query);
+        }
+    }
+
+    private void fetchFromQuery(string dbName, string query)
+    {
+        var db = Sitecore.Configuration.Factory.GetDatabase(dbName);
+        var items = db.SelectItems(query);
+
+        var data = items
+            .Select(i => new { Name = i.Name, Id = i.ID.ToString() });
+
+        var response = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+
+        Response.ContentType = "application/json";
+        Response.ContentEncoding = Encoding.UTF8;
+        Response.Write(response);
+    }
+
+    private void fetchFromDb(string dbName)
+    {
         var conStr = ConfigurationManager.ConnectionStrings[dbName].ConnectionString;
 
-        using(var conn = new SqlConnection(conStr))
+        var items = new Dictionary<Guid, string>();
+
+        using (var conn = new SqlConnection(conStr))
         {
             conn.Open();
 
-            using(var cmd = new SqlCommand())
+            using (var cmd = new SqlCommand())
             {
                 cmd.Connection = conn;
                 cmd.CommandType = System.Data.CommandType.Text;
@@ -102,29 +123,25 @@
 
                 using (var result = cmd.ExecuteReader())
                 {
-                    StringBuilder response = new StringBuilder();
-
                     while (result.Read())
                     {
                         var name = result.GetString(0);
                         var id = result.GetGuid(1);
 
-                        var row = "{Name: \"" + name+"\", Id: \""+id.ToString()+"\"}";
-
-                        if (response.Length>0)
-                        {
-                            response.Append(',');
-                        }
-                        response.Append(row);
+                        items.Add(id, name);
                     }
-
-                    Response.ContentType = "application/json";
-                    Response.ContentEncoding = Encoding.UTF8;
-                    Response.Write("["+response.ToString()+"]");
                 }
             }
         }
 
+        var data = items
+            .Select(k => new { Name = k.Value, Id = k.Key });
+
+        var response = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+
+        Response.ContentType = "application/json";
+        Response.ContentEncoding = Encoding.UTF8;
+        Response.Write(response);
     }
 
     private class Activity
@@ -194,7 +211,6 @@
         }
     }
 
-    // http://fairtrade.local/searchindexbuilder.endpoint.aspx?cmd=process&db=master&idx=sitecore_master_index&id=11111111-1111-1111-1111-111111111111
     private void processResponse()
     {
         var itemId = Request["id"];

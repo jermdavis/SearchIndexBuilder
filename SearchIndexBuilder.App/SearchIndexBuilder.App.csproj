@@ -41,6 +41,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -49,15 +50,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommandLineOptions\DeployOptions.cs" />
-    <Compile Include="CommandLineOptions\SetupOptions.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Processors\Deploy\DeployOptions.cs" />
+    <Compile Include="Processors\Remove\RemoveOptions.cs" />
+    <Compile Include="Processors\Remove\RemoveProcessor.cs" />
+    <Compile Include="Processors\Setup\SetupOptions.cs" />
     <Compile Include="EndpointProxies\Activity.cs" />
     <Compile Include="EndpointProxies\FakeEndpoint.cs" />
     <Compile Include="EndpointProxies\ISitecoreEndpointProxyFactory.cs" />
     <Compile Include="Processors\Deploy\DeployProcessor.cs" />
     <Compile Include="Processors\Indexing\IndexingProcessor.cs" />
     <Compile Include="Processors\OperationConfig.cs" />
-    <Compile Include="CommandLineOptions\IndexingOptions.cs" />
+    <Compile Include="Processors\Indexing\IndexingOptions.cs" />
     <Compile Include="EndpointProxies\ISitecoreEndpoint.cs" />
     <Compile Include="EndpointProxies\ItemEntry.cs" />
     <Compile Include="Processors\Indexing\ProcessState.cs" />
@@ -76,5 +80,6 @@
       <SubType>ASPXCodeBehind</SubType>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

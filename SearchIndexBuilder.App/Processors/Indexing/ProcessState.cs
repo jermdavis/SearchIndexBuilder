@@ -1,5 +1,4 @@
-﻿using SearchIndexBuilder.App.CommandLineOptions;
-using SearchIndexBuilder.App.EndpointProxies;
+﻿using SearchIndexBuilder.App.EndpointProxies;
 using System.Collections.Generic;
 using System.Diagnostics;
 
