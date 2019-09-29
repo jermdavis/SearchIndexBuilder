@@ -57,7 +57,7 @@
     <Compile Include="Processors\Setup\SetupOptions.cs" />
     <Compile Include="EndpointProxies\Activity.cs" />
     <Compile Include="EndpointProxies\FakeEndpoint.cs" />
-    <Compile Include="EndpointProxies\ISitecoreEndpointProxyFactory.cs" />
+    <Compile Include="EndpointProxies\ISitecoreEndpointFactory.cs" />
     <Compile Include="Processors\Deploy\DeployProcessor.cs" />
     <Compile Include="Processors\Indexing\IndexingProcessor.cs" />
     <Compile Include="Processors\OperationConfig.cs" />

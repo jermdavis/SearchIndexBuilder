@@ -1,6 +1,9 @@
 ﻿namespace SearchIndexBuilder.App.EndpointProxies
 {
 
+    /// <summary>
+    /// Model class used to deserialise the data returned from index operations on the remote endpoint
+    /// </summary>
     public class Activity
     {
         public string Uri { get; set; }

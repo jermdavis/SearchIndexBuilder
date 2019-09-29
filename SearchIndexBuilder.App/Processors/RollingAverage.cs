@@ -4,6 +4,9 @@ using System.Collections.Generic;
 namespace SearchIndexBuilder.App.Processors
 {
 
+    /// <summary>
+    /// Handles calculations for the rolling average timing data
+    /// </summary>
     public class RollingAverage
     {
         private int _size;

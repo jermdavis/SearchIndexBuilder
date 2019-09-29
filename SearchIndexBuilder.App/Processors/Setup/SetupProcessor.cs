@@ -6,6 +6,9 @@ using System.Linq;
 namespace SearchIndexBuilder.App.Processors.Setup
 {
 
+    /// <summary>
+    /// Goes through the process of creating a config file for indexing
+    /// </summary>
     public class SetupProcessor
     {
         public static void RunSetup(SetupOptions options, ISitecoreEndpointFactory endpointFactory)
@@ -31,7 +34,7 @@ namespace SearchIndexBuilder.App.Processors.Setup
             string data;
             try
             {
-                cfg.Indexes = endPoint.FetchIndexes(cfg.Token).ToArray();
+                cfg.Indexes = endPoint.FetchIndexes(cfg.Token);
                 cfg.Items = endPoint.FetchItemIds(cfg.Token, options.Database, options.Query);
 
                 data = Newtonsoft.Json.JsonConvert.SerializeObject(cfg, Newtonsoft.Json.Formatting.Indented);

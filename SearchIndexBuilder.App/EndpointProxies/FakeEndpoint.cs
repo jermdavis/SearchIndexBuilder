@@ -4,6 +4,20 @@ using System.Collections.Generic;
 namespace SearchIndexBuilder.App.EndpointProxies
 {
 
+    public class FakeEndpointFactory : ISitecoreEndpointFactory
+    {
+        public ISitecoreEndpoint Create(string url)
+        {
+            return new FakeEndpoint();
+        }
+    }
+
+    /// <summary>
+    /// For test purposes, this endpoint proxy can be used when you don't want to target a Sitecore instance
+    /// </summary>
+    /// <remarks>
+    /// Just returns data for most operations - but will randomly add errors during indexing calls.
+    /// </remarks>
     public class FakeEndpoint : ISitecoreEndpoint
     {
         private Random _rnd = new Random();

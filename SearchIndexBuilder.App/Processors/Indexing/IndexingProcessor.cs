@@ -7,6 +7,9 @@ using System.Text;
 namespace SearchIndexBuilder.App.Processors.Indexing
 {
 
+    /// <summary>
+    /// Handles the process of re-indexing items
+    /// </summary>
     public class IndexingProcessor
     {
         public static void RunProcess(IndexingOptions options, ISitecoreEndpointFactory endpointFactory)
@@ -210,8 +213,6 @@ namespace SearchIndexBuilder.App.Processors.Indexing
                 retries = 0;
             }
         }
-
-        private static Random _rnd = new Random();
 
         private static void randomBackOff(int errorCount)
         {

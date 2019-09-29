@@ -5,6 +5,9 @@ using System.Reflection;
 namespace SearchIndexBuilder.App.Processors.Deploy
 {
 
+    /// <summary>
+    /// Handles the "deploy the endpoint" operation
+    /// </summary>
     public class DeployProcessor
     {
         private static void writeResourceToFile(string resourceName, string fileName)

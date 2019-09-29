@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 namespace SearchIndexBuilder.App.Processors.Remove
 {
 
+    /// <summary>
+    /// Handles removing the endpoint from Sitecore
+    /// </summary>
     public class RemoveProcessor
     {
         public static void RunRemove(RemoveOptions options)

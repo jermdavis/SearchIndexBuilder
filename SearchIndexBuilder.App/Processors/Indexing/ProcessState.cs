@@ -5,6 +5,9 @@ using System.Diagnostics;
 namespace SearchIndexBuilder.App.Processors.Indexing
 {
 
+    /// <summary>
+    /// Internal model for the current state of an indexing operation
+    /// </summary>
     public class ProcessState
     {
         public Stopwatch sw { get; } = new Stopwatch();
