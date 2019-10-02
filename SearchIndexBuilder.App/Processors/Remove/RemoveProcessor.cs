@@ -23,7 +23,16 @@ namespace SearchIndexBuilder.App.Processors.Remove
 
             if (File.Exists(fileName))
             {
-                File.Delete(fileName);
+                try
+                {
+                    File.Delete(fileName);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    Console.WriteLine("Error: Unable to remove the endpoint file from disk.");
+                    Console.WriteLine("This command requires delete permissions in the folder specified with the -w parameter.");
+                    return;
+                }
                 Console.WriteLine($"Endpoint removed from {options.Website}");
             }
             else
