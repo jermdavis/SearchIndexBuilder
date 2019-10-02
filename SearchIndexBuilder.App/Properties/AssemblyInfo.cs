@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Jeremy Davis")]
 [assembly: AssemblyProduct("SearchIndexBuilder.App")]
-[assembly: AssemblyCopyright("Copyright ©  2019")]
+[assembly: AssemblyCopyright("Copyright © Jeremy Davis")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

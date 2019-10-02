@@ -20,9 +20,8 @@ namespace SearchIndexBuilder.App
             Console.WriteLine(@" ____) |  __/ (_| | | | (__| | | |_| |_| | | | (_| |  __/>  < ");
             Console.WriteLine(@"|_____/ \___|\__,_|_|  \___|_| |_|_____|_| |_|\__,_|\___/_/\_\");
             Console.WriteLine(@"                                                       Builder");
-            Console.WriteLine();
 
-            var endpointFactory = new SitecoreWebEndpointFactory();
+            var endpointFactory = new FakeEndpointFactory();
 
             var parser = new Parser(s => {
                 s.HelpWriter = Console.Error;
