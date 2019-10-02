@@ -34,6 +34,8 @@ namespace SearchIndexBuilder.App.EndpointProxies
 
         public IEnumerable<ItemEntry> FetchItemIds(string token, string database, string query)
         {
+            System.Threading.Thread.Sleep(5000);
+
             return new ItemEntry[] {
                 new ItemEntry() { Name="one", Id=Guid.NewGuid() },
                 new ItemEntry() { Name="two", Id=Guid.NewGuid() },
@@ -46,7 +48,7 @@ namespace SearchIndexBuilder.App.EndpointProxies
 
         public bool IndexItem(string token, Guid id, string databaseName, IEnumerable<string> indexes)
         {
-            System.Threading.Thread.Sleep(50 + _rnd.Next(250));
+            System.Threading.Thread.Sleep(50 + _rnd.Next(5000));
 
             int rnd = _rnd.Next(10);
 

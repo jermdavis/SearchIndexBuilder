@@ -163,6 +163,8 @@ namespace SearchIndexBuilder.App.Processors.Indexing
 
             try
             {
+                Console.Write($"{itm.Id} {itm.Name}...");
+
                 result = state.Endpoint.IndexItem(state.Config.Token, itm.Id, state.Config.Database, state.Config.Indexes);
 
                 if (result == false)
@@ -190,12 +192,12 @@ namespace SearchIndexBuilder.App.Processors.Indexing
                     state.Items.Dequeue();
 
                     state.Errors.Add($">>ERR:  {itm.Id} - Too many retries - aborting");
-                    Console.WriteLine($"{itm.Id} {itm.Name} -- {state.sw.Elapsed.TotalMilliseconds}ms -- Too many retries");
+                    Console.WriteLine($"\r{itm.Id} {itm.Name} -- {state.sw.Elapsed.TotalMilliseconds}ms -- Too many retries");
                 }
                 else
                 {
                     retries += 1;
-                    Console.WriteLine($"{itm.Id} {itm.Name} -- {state.sw.Elapsed.TotalMilliseconds}ms -- Warning #{retries}");
+                    Console.WriteLine($"\r{itm.Id} {itm.Name} -- {state.sw.Elapsed.TotalMilliseconds}ms -- Warning #{retries}");
                     randomBackOff(retries);
                 }
             }
@@ -207,7 +209,7 @@ namespace SearchIndexBuilder.App.Processors.Indexing
                     msg = " - Transient error corrected";
                 }
 
-                Console.WriteLine($"{itm.Id} {itm.Name} -- {state.sw.Elapsed.TotalMilliseconds}ms{msg}");
+                Console.WriteLine($"\r{itm.Id} {itm.Name} -- {state.sw.Elapsed.TotalMilliseconds}ms{msg}");
                 state.Items.Dequeue();
                 processed += 1;
                 retries = 0;

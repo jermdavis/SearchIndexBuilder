@@ -34,10 +34,17 @@ namespace SearchIndexBuilder.App.Processors.Setup
             string data;
             try
             {
+                Console.Write("Fetching indexes...");
                 cfg.Indexes = endPoint.FetchIndexes(cfg.Token);
-                cfg.Items = endPoint.FetchItemIds(cfg.Token, options.Database, options.Query);
+                Console.WriteLine();
 
+                Console.Write("Fetching item data...");
+                cfg.Items = endPoint.FetchItemIds(cfg.Token, options.Database, options.Query);
+                Console.WriteLine();
+
+                Console.Write("Serialising config...");
                 data = Newtonsoft.Json.JsonConvert.SerializeObject(cfg, Newtonsoft.Json.Formatting.Indented);
+                Console.WriteLine();
             }
             catch(Exception ex)
             {
@@ -57,10 +64,12 @@ namespace SearchIndexBuilder.App.Processors.Setup
                 return;
             }
 
+            Console.Write("Saving config to disk...");
             using (var file = File.CreateText(options.ConfigFile))
             {
                 file.WriteLine(data);
             }
+            Console.WriteLine();
 
             Console.WriteLine($"Config written to {options.ConfigFile}");
         }
