@@ -92,7 +92,9 @@ namespace SearchIndexBuilder.App.Processors.Indexing
 
             var now = DateTime.Now;
 
-            var configFile = $"backup-{now.ToString("yyyyMMdd-hhmm")}-{state.Options.ConfigFile}";
+            var baseFilename = extractBaseFilename(state.Options.ConfigFile, "backup-");
+
+            var configFile = $"backup-{now.ToString("yyyyMMdd-hhmm")}-{baseFilename}";
             using (var file = System.IO.File.CreateText(configFile))
             {
                 state.Config.Items = state.Items.ToArray();
@@ -104,9 +106,22 @@ namespace SearchIndexBuilder.App.Processors.Indexing
             backupErrors(now, state);
         }
 
+        private static string extractBaseFilename(string name, string prefix)
+        {
+            var result = name;
+            
+            while(result.Contains(prefix))
+            {
+                result = result.Substring(14 + prefix.Length);
+            }
+
+            return result;
+        }
+
         private static void backupErrors(DateTime now, ProcessState state)
         {
-            var errorFile = $"errors-{now.ToString("yyyyMMdd-hhmm")}-{state.Options.ConfigFile}";
+            var baseFilename = extractBaseFilename(state.Options.ConfigFile, "backup-");
+            var errorFile = $"errors-{now.ToString("yyyyMMdd-hhmm")}-{baseFilename}";
             using (var file = System.IO.File.CreateText(errorFile))
             {
                 var data = Newtonsoft.Json.JsonConvert.SerializeObject(state.Errors, Newtonsoft.Json.Formatting.Indented);
@@ -123,7 +138,7 @@ namespace SearchIndexBuilder.App.Processors.Indexing
             Console.CancelKeyPress += (sender, args) => {
                 if (cancelTriggered == false)
                 {
-                    Console.WriteLine(">>Cancel triggered! Finishing current operation and tidying up...");
+                    Console.WriteLine(Environment.NewLine + ">>Cancel triggered! Finishing current operation and tidying up...");
                     cancelTriggered = true;
                 }
                 args.Cancel = true;
