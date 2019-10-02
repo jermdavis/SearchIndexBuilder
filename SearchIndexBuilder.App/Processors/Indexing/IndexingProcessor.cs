@@ -121,8 +121,11 @@ namespace SearchIndexBuilder.App.Processors.Indexing
             bool cancelTriggered = false;
 
             Console.CancelKeyPress += (sender, args) => {
-                Console.WriteLine(">>Cancel triggered! Finishing current operation and tidying up...");
-                cancelTriggered = true;
+                if (cancelTriggered == false)
+                {
+                    Console.WriteLine(">>Cancel triggered! Finishing current operation and tidying up...");
+                    cancelTriggered = true;
+                }
                 args.Cancel = true;
             };
 
