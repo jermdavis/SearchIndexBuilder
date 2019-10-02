@@ -13,12 +13,13 @@ namespace SearchIndexBuilder.App
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(@"  _____                     _     _____           _           ____        _ _     _           ");
-            Console.WriteLine(@" / ____|                   | |   |_   _|         | |         |  _ \      (_) |   | |          ");
-            Console.WriteLine(@"| (___   ___  __ _ _ __ ___| |__   | |  _ __   __| | _____  _| |_) |_   _ _| | __| | ___ _ __ ");
-            Console.WriteLine(@" \___ \ / _ \/ _` | '__/ __| '_ \  | | | '_ \ / _` |/ _ \ \/ /  _ <| | | | | |/ _` |/ _ \ '__|");
-            Console.WriteLine(@" ____) |  __/ (_| | | | (__| | | |_| |_| | | | (_| |  __/>  <| |_) | |_| | | | (_| |  __/ |   ");
-            Console.WriteLine(@"|_____/ \___|\__,_|_|  \___|_| |_|_____|_| |_|\__,_|\___/_/\_\____/ \__,_|_|_|\__,_|\___|_|   ");
+            Console.WriteLine(@"  _____                     _     _____           _           ");
+            Console.WriteLine(@" / ____|                   | |   |_   _|         | |          ");
+            Console.WriteLine(@"| (___   ___  __ _ _ __ ___| |__   | |  _ __   __| | _____  _ ");
+            Console.WriteLine(@" \___ \ / _ \/ _` | '__/ __| '_ \  | | | '_ \ / _` |/ _ \ \/ /");
+            Console.WriteLine(@" ____) |  __/ (_| | | | (__| | | |_| |_| | | | (_| |  __/>  < ");
+            Console.WriteLine(@"|_____/ \___|\__,_|_|  \___|_| |_|_____|_| |_|\__,_|\___/_/\_\");
+            Console.WriteLine(@"                                                       Builder");
             Console.WriteLine();
 
             var endpointFactory = new SitecoreWebEndpointFactory();
