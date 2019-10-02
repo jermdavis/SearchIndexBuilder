@@ -45,14 +45,32 @@ namespace SearchIndexBuilder.App.Processors.Deploy
                 return;
             }
 
-            writeResourceToFile($"SearchIndexBuilder.App.Endpoint.{file}", fileName);
+            try
+            {
+                writeResourceToFile($"SearchIndexBuilder.App.Endpoint.{file}", fileName);
+            }
+            catch(UnauthorizedAccessException)
+            {
+                Console.WriteLine("Error: Unable to write the endpoint file to disk.");
+                Console.WriteLine("This command requires write permissions to the folder specified with the -w parameter.");
+                return;
+            }
 
             if (string.IsNullOrWhiteSpace(options.Token))
             {
                 options.Token = Guid.NewGuid().ToString();
             }
 
-            updateResourceFileWithToken(fileName, options.Token);
+            try
+            {
+                updateResourceFileWithToken(fileName, options.Token);
+            }
+            catch(UnauthorizedAccessException)
+            {
+                Console.WriteLine("Error: Unable to update endpoint file with security token.");
+                Console.WriteLine("This command requires write permissions to the folder specified with the -w parameter.");
+                return;
+            }
 
             Console.WriteLine($"Deploying {file} to {options.Website}");
             Console.WriteLine($"Security token is: {options.Token}");
