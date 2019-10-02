@@ -24,7 +24,12 @@ namespace SearchIndexBuilder.App
 
             var endpointFactory = new SitecoreWebEndpointFactory();
 
-            CommandLine.Parser.Default
+            var parser = new Parser(s => {
+                s.HelpWriter = Console.Error;
+                s.CaseSensitive = false;
+            });
+
+            parser
                 .ParseArguments<SetupOptions, IndexingOptions, DeployOptions, RemoveOptions>(args)
                 .WithParsed<SetupOptions>(o => SetupProcessor.RunSetup(o, endpointFactory))
                 .WithParsed<IndexingOptions>(o => IndexingProcessor.RunProcess(o, endpointFactory))
