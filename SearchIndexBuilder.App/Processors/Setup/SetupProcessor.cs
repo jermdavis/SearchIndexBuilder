@@ -12,17 +12,14 @@ namespace SearchIndexBuilder.App.Processors.Setup
     /// </summary>
     public class SetupProcessor : BaseProcessor<SetupOptions>
     {
-        public static void RunProcess(SetupOptions options, ISitecoreEndpointFactory endpointFactory)
+        public static void RunProcess(SetupOptions options)
         {
-            var sp = new SetupProcessor(options, endpointFactory);
+            var sp = new SetupProcessor(options);
             sp.Run();
         }
 
-        private ISitecoreEndpointFactory _endpointFactory;
-
-        public SetupProcessor(SetupOptions options, ISitecoreEndpointFactory endpointFactory) : base(options)
+        public SetupProcessor(SetupOptions options) : base(options)
         {
-            _endpointFactory = endpointFactory;
         }
 
         public override void Run()

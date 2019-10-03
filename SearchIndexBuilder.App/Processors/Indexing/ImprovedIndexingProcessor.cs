@@ -10,22 +10,19 @@ namespace SearchIndexBuilder.App.Processors.Indexing
 
     public class ImprovedIndexingProcessor : BaseProcessor<IndexingOptions>
     {
-        public static void RunProcess(IndexingOptions options, ISitecoreEndpointFactory endpointFactory)
+        public static void RunProcess(IndexingOptions options)
         {
-            var ip = new ImprovedIndexingProcessor(options, endpointFactory);
+            var ip = new ImprovedIndexingProcessor(options);
             ip.Run();
         }
 
         private ConfigFileManager _configFileManager;
-        private IndexingOptions _options;
-        private ISitecoreEndpointFactory _endpointFactory;
         private bool _cancelTriggered = false;
 
-        public ImprovedIndexingProcessor(IndexingOptions options, ISitecoreEndpointFactory endpointFactory) : base(options)
+        public ImprovedIndexingProcessor(IndexingOptions options) : base(options)
         {
             _configFileManager = new ConfigFileManager();
             _options = options;
-            _endpointFactory = endpointFactory;
         }
 
         private void ProcessAllGroups(ProcessState state)
