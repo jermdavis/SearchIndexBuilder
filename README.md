@@ -89,12 +89,13 @@ The parameters are:
   increasing amount after each error. The default value is five retries. e.g. `-r 10`
 * `-p` / `-pause` (Optional, integer) : If you want to lower the impact of the indexing process on your target server then you can use this
   parameter to add a pause between each item indexing request. The value is in milliseconds. e.g. `-p 250`
+* `-t` / `-timeout` (Optional, integer) : The default timeout for HTTP operations with Sitecore is 60 seconds. You can specify a longer timeout (in seconds) using this flag.
 
 You can stop the tool safely with `Ctrl-C`. It will finish its current operation, and then end. The current state (specifically what items are left to process, and what errors
-have been recorded - both transient and permenant) will be written to disk. The filenames will be in the form `errors-<date>-<time>-<config>.json` and `backup-<date>-<time>-<config>.json`
-and you can re-start the process later by passing the "backup" config file written here into the tool with `-c`.
+have been recorded - both transient and permenant) will be written to disk in the config file. The previous state of the config fill will be preserved in a backup file named with
+the format `backup-<date>-<time>-<config>.json` so that you can revert to this previous state if necessary.
 
-The error data is also saved to disk when the tool finishes normally - giving a record of items which caused problems.
+The updated config is also saved to disk when the tool finishes normally - giving a record of items which caused problems.
 
 ## Step 4: Removing the endpoint
 
@@ -107,3 +108,12 @@ The parameters are:
 
 * `-w` / `-website` (Required, string) : The Sitecore website's web root folder. This is where the endpoint file will be removed from.
   Remember to put quotes around this string if it includes spaces. e.g. `-w "c:\inetpub\wwroot\mysite\Website"`
+
+## Other parameters
+
+The system also supports some global parameters, which will affect all of the verbs:
+
+* `-a` / `-attach` (Optional) : Causes the processing to pause between parsing the command line options and starting any processing.
+  This allows you to attach a debugger if you need to.
+* `-f` / `-fake` (Optional) : Makes the code use a "fake" object as the endpoint proxy class - allowing it to process some data without a
+  connection to Sitecore being possible.

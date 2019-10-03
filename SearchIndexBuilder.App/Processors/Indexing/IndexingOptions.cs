@@ -4,7 +4,7 @@ namespace SearchIndexBuilder.App.Processors.Indexing
 {
 
     [Verb("index", HelpText = "Runs the index update defined in config")]
-    public class IndexingOptions
+    public class IndexingOptions : CoreOptions
     {
         [Option('c', "config", Required = false, HelpText = "The file to write the config json to")]
         public string ConfigFile { get; set; } = "config.json";
@@ -17,6 +17,9 @@ namespace SearchIndexBuilder.App.Processors.Indexing
 
         [Option('p', "pause", Required = false, HelpText = "To throttle the effect of the index build on your server, pause for this number of ms between operations.")]
         public int Pause { get; set; } = 0;
+
+        [Option('t', "timeout", Required = false, HelpText = "Allows you to specify a longer timeout for indexing operations. Up to int.MaxValue seconds.")]
+        public int Timeout { get; set; } = 60;
     }
 
 }

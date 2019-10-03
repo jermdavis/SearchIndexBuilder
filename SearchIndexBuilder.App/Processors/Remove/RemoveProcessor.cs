@@ -11,15 +11,27 @@ namespace SearchIndexBuilder.App.Processors.Remove
     /// <summary>
     /// Handles removing the endpoint from Sitecore
     /// </summary>
-    public class RemoveProcessor
+    public class RemoveProcessor : BaseProcessor<RemoveOptions>
     {
-        public static void RunRemove(RemoveOptions options)
+        public static void RunProcess(RemoveOptions options)
         {
+            var rp = new RemoveProcessor(options);
+            rp.Run();
+        }
+
+        public RemoveProcessor(RemoveOptions options) : base(options)
+        {
+        }
+
+        public override void Run()
+        {
+            base.Run();
+
             Console.WriteLine("Removing endpoint");
             Console.WriteLine("-----------------");
 
             var file = Constants.EndpointFile;
-            var fileName = Path.Combine(options.Website, file);
+            var fileName = Path.Combine(_options.Website, file);
 
             if (File.Exists(fileName))
             {
@@ -33,11 +45,11 @@ namespace SearchIndexBuilder.App.Processors.Remove
                     Console.WriteLine("This command requires delete permissions in the folder specified with the -w parameter.");
                     return;
                 }
-                Console.WriteLine($"Endpoint removed from {options.Website}");
+                Console.WriteLine($"Endpoint removed from {_options.Website}");
             }
             else
             {
-                Console.WriteLine($"Endpoint not found at {options.Website}");
+                Console.WriteLine($"Endpoint not found at {_options.Website}");
             }
         }
     }

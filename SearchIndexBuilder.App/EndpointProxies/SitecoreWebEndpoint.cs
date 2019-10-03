@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Web;
 
@@ -55,18 +54,17 @@ namespace SearchIndexBuilder.App.EndpointProxies
             return Newtonsoft.Json.JsonConvert.DeserializeObject<ItemEntry[]>(data);
         }
 
-        public bool IndexItem(string token, Guid id, string databaseName, IEnumerable<string> indexes)
+        public IndexResult IndexItem(string token, Guid id, string databaseName, IEnumerable<string> indexes, int timeout)
         {
-            WebClient wc = new WebClient();
+            WebClient wc = new ExtendedTimeoutWebClient(timeout);
 
             var idx = string.Join(",", indexes);
 
-            var data = wc.DownloadString($"{_url}?cmd=process&db={databaseName}&idx={idx}&id={id}&t={token}");
+            var data = wc.DownloadString($"{_url}?cmd=process&db={databaseName}&idx={idx}&id={id}&t={token}&to={timeout}");
 
             var result = Newtonsoft.Json.JsonConvert.DeserializeObject<Activity[]>(data);
-            var errors = result.Where(a => a.Error != null).Any();
 
-            return !errors;
+            return new IndexResult(result);
         }
     }
 

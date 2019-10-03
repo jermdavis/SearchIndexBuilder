@@ -21,8 +21,6 @@ namespace SearchIndexBuilder.App
             Console.WriteLine(@"|_____/ \___|\__,_|_|  \___|_| |_|_____|_| |_|\__,_|\___/_/\_\");
             Console.WriteLine(@"                                                       Builder");
 
-            var endpointFactory = new SitecoreWebEndpointFactory();
-
             var parser = new Parser(s => {
                 s.HelpWriter = Console.Error;
                 s.CaseSensitive = false;
@@ -30,10 +28,10 @@ namespace SearchIndexBuilder.App
 
             parser
                 .ParseArguments<SetupOptions, IndexingOptions, DeployOptions, RemoveOptions>(args)
-                .WithParsed<SetupOptions>(o => SetupProcessor.RunSetup(o, endpointFactory))
-                .WithParsed<IndexingOptions>(o => IndexingProcessor.RunProcess(o, endpointFactory))
-                .WithParsed<DeployOptions>(o => DeployProcessor.RunDeploy(o))
-                .WithParsed<RemoveOptions>(o => RemoveProcessor.RunRemove(o));
+                .WithParsed<SetupOptions>(o => SetupProcessor.RunProcess(o))
+                .WithParsed<IndexingOptions>(o => ImprovedIndexingProcessor.RunProcess(o))
+                .WithParsed<DeployOptions>(o => DeployProcessor.RunProcess(o))
+                .WithParsed<RemoveOptions>(o => RemoveProcessor.RunProcess(o));
         }
     }
 

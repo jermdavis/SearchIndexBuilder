@@ -8,8 +8,18 @@ namespace SearchIndexBuilder.App.Processors.Deploy
     /// <summary>
     /// Handles the "deploy the endpoint" operation
     /// </summary>
-    public class DeployProcessor
+    public class DeployProcessor : BaseProcessor<DeployOptions>
     {
+        public static void RunProcess(DeployOptions options)
+        {
+            var dp = new DeployProcessor(options);
+            dp.Run();
+        }
+
+        public DeployProcessor(DeployOptions options) : base(options)
+        {
+        }
+
         private static void writeResourceToFile(string resourceName, string fileName)
         {
             using (var resource = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
@@ -30,17 +40,17 @@ namespace SearchIndexBuilder.App.Processors.Deploy
             File.WriteAllText(fileName, data);
         }
 
-        public static void RunDeploy(DeployOptions options)
+        public override void Run()
         {
             Console.WriteLine("Deploying endpoint");
             Console.WriteLine("------------------");
 
             var file = Constants.EndpointFile;
-            var fileName = Path.Combine(options.Website, file);
+            var fileName = Path.Combine(_options.Website, file);
 
-            if(File.Exists(fileName) && options.Overwrite == false)
+            if(File.Exists(fileName) && _options.Overwrite == false)
             {
-                Console.WriteLine($"The endpoint file already exists at {options.Website} and overwrite not allowed.");
+                Console.WriteLine($"The endpoint file already exists at {_options.Website} and overwrite not allowed.");
                 Console.WriteLine("It will not be delployed.");
                 return;
             }
@@ -56,14 +66,14 @@ namespace SearchIndexBuilder.App.Processors.Deploy
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(options.Token))
+            if (string.IsNullOrWhiteSpace(_options.Token))
             {
-                options.Token = Guid.NewGuid().ToString();
+                _options.Token = Guid.NewGuid().ToString();
             }
 
             try
             {
-                updateResourceFileWithToken(fileName, options.Token);
+                updateResourceFileWithToken(fileName, _options.Token);
             }
             catch(UnauthorizedAccessException)
             {
@@ -72,8 +82,8 @@ namespace SearchIndexBuilder.App.Processors.Deploy
                 return;
             }
 
-            Console.WriteLine($"Deploying {file} to {options.Website}");
-            Console.WriteLine($"Security token is: {options.Token}");
+            Console.WriteLine($"Deploying {file} to {_options.Website}");
+            Console.WriteLine($"Security token is: {_options.Token}");
         }
     }
 
