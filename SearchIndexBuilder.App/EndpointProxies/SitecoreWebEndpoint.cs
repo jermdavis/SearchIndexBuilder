@@ -54,13 +54,13 @@ namespace SearchIndexBuilder.App.EndpointProxies
             return Newtonsoft.Json.JsonConvert.DeserializeObject<ItemEntry[]>(data);
         }
 
-        public IndexResult IndexItem(string token, Guid id, string databaseName, IEnumerable<string> indexes, int timeout)
+        public IndexResult IndexItem(string token, ItemEntry itm, string databaseName, IEnumerable<string> indexes, int timeout)
         {
             WebClient wc = new ExtendedTimeoutWebClient(timeout);
 
             var idx = string.Join(",", indexes);
 
-            var data = wc.DownloadString($"{_url}?cmd=process&db={databaseName}&idx={idx}&id={id}&t={token}&to={timeout}");
+            var data = wc.DownloadString($"{_url}?cmd=process&db={databaseName}&idx={idx}&id={itm.Id}&t={token}&to={timeout}");
 
             var result = Newtonsoft.Json.JsonConvert.DeserializeObject<Activity[]>(data);
 

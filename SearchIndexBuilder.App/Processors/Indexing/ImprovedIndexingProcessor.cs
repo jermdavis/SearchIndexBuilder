@@ -89,15 +89,16 @@ namespace SearchIndexBuilder.App.Processors.Indexing
             {
                 Console.Write($"{itm.Id} {itm.Name}...");
 
-                var indexResult = state.Endpoint.IndexItem(state.Config.Token, itm.Id, state.Config.Database, state.Config.Indexes, state.Options.Timeout);
+                var indexResult = state.Endpoint.IndexItem(state.Config.Token, itm, state.Config.Database, state.Config.Indexes, state.Options.Timeout);
                 result = !indexResult.Error;
 
                 if (indexResult.Error)
                 {
-                    var err = new ItemError() {
+                    var err = new ItemFailure() {
                         At = DateTime.Now,
                         Item = itm,
-                        Errors = indexResult.Activities.Select(a => a.Error).ToArray()
+                        Errors = indexResult.Activities.Select(a =>a.Error).ToArray(),
+                        FailureType = FailureType.Warning
                     };
                     state.Config.Errors.Enqueue(err);
                 }
@@ -105,11 +106,12 @@ namespace SearchIndexBuilder.App.Processors.Indexing
             catch (Exception ex)
             {
                 result = false;
-                var err = new ItemError()
+                var err = new ItemFailure()
                 {
                     At = DateTime.Now,
                     Item = itm,
-                    Errors = new string[] { $"WARN: {formatException(ex)}" }
+                    Errors = new string[] { formatException(ex) },
+                    FailureType = FailureType.Warning
                 };
                 state.Config.Errors.Enqueue(err);
             }
@@ -147,7 +149,7 @@ namespace SearchIndexBuilder.App.Processors.Indexing
                     processed += 1;
                     state.Config.Processed.Enqueue(state.Config.Items.Dequeue());
 
-                    state.Config.Errors.Enqueue(new ItemError() { At=DateTime.Now, Item = itm, Errors = new string[] { "Too many retries - aborting" } });
+                    state.Config.Errors.Enqueue(new ItemFailure() { At=DateTime.Now, Item = itm, Errors = new string[] { "Too many retries - aborting" }, FailureType = FailureType.Error });
                     Console.WriteLine($"\r{itm.Id} {itm.Name} -- {state.sw.Elapsed.TotalMilliseconds}ms -- Too many retries");
                 }
                 else
