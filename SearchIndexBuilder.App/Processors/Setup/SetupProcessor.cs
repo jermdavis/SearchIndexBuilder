@@ -1,5 +1,6 @@
 ﻿using SearchIndexBuilder.App.EndpointProxies;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -39,7 +40,8 @@ namespace SearchIndexBuilder.App.Processors.Setup
                 Console.WriteLine();
 
                 Console.Write("Fetching item data...");
-                cfg.Items = endPoint.FetchItemIds(cfg.Token, options.Database, options.Query);
+                var items = endPoint.FetchItemIds(cfg.Token, options.Database, options.Query);
+                cfg.Items = new Queue<ItemEntry>(items);
                 Console.WriteLine();
 
                 Console.Write("Serialising config...");
@@ -48,7 +50,7 @@ namespace SearchIndexBuilder.App.Processors.Setup
             }
             catch(Exception ex)
             {
-                Console.WriteLine("Exception caught from endpoint while extracting setup data:");
+                Console.WriteLine(Environment.NewLine + "Exception caught from endpoint while extracting setup data:");
                 while(ex != null)
                 {
                     Console.WriteLine($"{ex.GetType().Name}: {ex.Message}");
