@@ -20,11 +20,15 @@ namespace SearchIndexBuilder.App
             Console.WriteLine(@" ____) |  __/ (_| | | | (__| | | |_| |_| | | | (_| |  __/>  < ");
             Console.WriteLine(@"|_____/ \___|\__,_|_|  \___|_| |_|_____|_| |_|\__,_|\___/_/\_\");
             Console.WriteLine(@"                                                       Builder");
-            Console.WriteLine();
 
             var endpointFactory = new SitecoreWebEndpointFactory();
 
-            CommandLine.Parser.Default
+            var parser = new Parser(s => {
+                s.HelpWriter = Console.Error;
+                s.CaseSensitive = false;
+            });
+
+            parser
                 .ParseArguments<SetupOptions, IndexingOptions, DeployOptions, RemoveOptions>(args)
                 .WithParsed<SetupOptions>(o => SetupProcessor.RunSetup(o, endpointFactory))
                 .WithParsed<IndexingOptions>(o => IndexingProcessor.RunProcess(o, endpointFactory))

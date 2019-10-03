@@ -3,7 +3,7 @@
 namespace SearchIndexBuilder.App.Processors.Indexing
 {
 
-    [Verb("Index", HelpText = "Runs the index update defined in config")]
+    [Verb("index", HelpText = "Runs the index update defined in config")]
     public class IndexingOptions
     {
         [Option('c', "config", Required = false, HelpText = "The file to write the config json to")]

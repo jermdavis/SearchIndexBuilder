@@ -3,7 +3,7 @@
 namespace SearchIndexBuilder.App.Processors.Setup
 {
 
-    [Verb("Setup", HelpText = "Fetches config data for a rebuild operation from a target server")]
+    [Verb("setup", HelpText = "Fetches config data for a rebuild operation from a target server")]
     public class SetupOptions
     {
         [Option('u', "url", Required = true, HelpText = "The URL for the SearchIndexBuilder endpoint")]

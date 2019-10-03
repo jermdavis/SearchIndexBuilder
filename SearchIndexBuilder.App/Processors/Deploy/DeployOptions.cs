@@ -3,7 +3,7 @@
 namespace SearchIndexBuilder.App.Processors.Deploy
 {
 
-    [Verb("Deploy", HelpText = "Deploy the endpoint into a site")]
+    [Verb("deploy", HelpText = "Deploy the endpoint into a site")]
     public class DeployOptions
     {
         [Option('w', "website", Required = true, HelpText = "The website root folder to deploy the endpoint file to")]
