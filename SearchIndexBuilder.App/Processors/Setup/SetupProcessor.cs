@@ -10,27 +10,42 @@ namespace SearchIndexBuilder.App.Processors.Setup
     /// <summary>
     /// Goes through the process of creating a config file for indexing
     /// </summary>
-    public class SetupProcessor
+    public class SetupProcessor : BaseProcessor<SetupOptions>
     {
-        public static void RunSetup(SetupOptions options, ISitecoreEndpointFactory endpointFactory)
+        public static void RunProcess(SetupOptions options, ISitecoreEndpointFactory endpointFactory)
         {
+            var sp = new SetupProcessor(options, endpointFactory);
+            sp.Run();
+        }
+
+        private ISitecoreEndpointFactory _endpointFactory;
+
+        public SetupProcessor(SetupOptions options, ISitecoreEndpointFactory endpointFactory) : base(options)
+        {
+            _endpointFactory = endpointFactory;
+        }
+
+        public override void Run()
+        {
+            base.Run();
+
             Console.WriteLine("Writing configuration");
             Console.WriteLine("---------------------");
 
-            if (File.Exists(options.ConfigFile) && options.Overwrite == false)
+            if (File.Exists(_options.ConfigFile) && _options.Overwrite == false)
             {
-                Console.WriteLine($"Config file {options.ConfigFile} exists.");
+                Console.WriteLine($"Config file {_options.ConfigFile} exists.");
                 Console.WriteLine($"Overwrite not specified so file will not be overwritten");
 
                 return;
             }
 
             var cfg = new OperationConfig();
-            cfg.Url = options.Url;
-            cfg.Database = options.Database;
-            cfg.Token = options.Token;
+            cfg.Url = _options.Url;
+            cfg.Database = _options.Database;
+            cfg.Token = _options.Token;
 
-            ISitecoreEndpoint endPoint = endpointFactory.Create(options.Url);
+            ISitecoreEndpoint endPoint = _endpointFactory.Create(_options.Url);
 
             string data;
             try
@@ -40,7 +55,7 @@ namespace SearchIndexBuilder.App.Processors.Setup
                 Console.WriteLine();
 
                 Console.Write("Fetching item data...");
-                var items = endPoint.FetchItemIds(cfg.Token, options.Database, options.Query);
+                var items = endPoint.FetchItemIds(cfg.Token, _options.Database, _options.Query);
                 cfg.Items = new Queue<ItemEntry>(items);
                 Console.WriteLine();
 
@@ -67,13 +82,13 @@ namespace SearchIndexBuilder.App.Processors.Setup
             }
 
             Console.Write("Saving config to disk...");
-            using (var file = File.CreateText(options.ConfigFile))
+            using (var file = File.CreateText(_options.ConfigFile))
             {
                 file.WriteLine(data);
             }
             Console.WriteLine();
 
-            Console.WriteLine($"Config written to {options.ConfigFile}");
+            Console.WriteLine($"Config written to {_options.ConfigFile}");
         }
     }
 

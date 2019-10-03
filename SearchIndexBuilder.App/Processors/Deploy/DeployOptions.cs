@@ -4,7 +4,7 @@ namespace SearchIndexBuilder.App.Processors.Deploy
 {
 
     [Verb("deploy", HelpText = "Deploy the endpoint into a site")]
-    public class DeployOptions
+    public class DeployOptions : CoreOptions
     {
         [Option('w', "website", Required = true, HelpText = "The website root folder to deploy the endpoint file to")]
         public string Website { get; set; }

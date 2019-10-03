@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace SearchIndexBuilder.App.Processors.Indexing
 {
 
-    public class ImprovedIndexingProcessor : IVerbProcessor
+    public class ImprovedIndexingProcessor : BaseProcessor<IndexingOptions>
     {
         public static void RunProcess(IndexingOptions options, ISitecoreEndpointFactory endpointFactory)
         {
@@ -21,7 +21,7 @@ namespace SearchIndexBuilder.App.Processors.Indexing
         private ISitecoreEndpointFactory _endpointFactory;
         private bool _cancelTriggered = false;
 
-        public ImprovedIndexingProcessor(IndexingOptions options, ISitecoreEndpointFactory endpointFactory)
+        public ImprovedIndexingProcessor(IndexingOptions options, ISitecoreEndpointFactory endpointFactory) : base(options)
         {
             _configFileManager = new ConfigFileManager();
             _options = options;
@@ -43,7 +43,10 @@ namespace SearchIndexBuilder.App.Processors.Indexing
 
                 var estimatedRemaining = new TimeSpan(state.Average.CurrentAverage().Ticks * state.Config.Items.Count);
 
-                Console.WriteLine($">> Estimated remaining: {estimatedRemaining} - ending {DateTime.Now + estimatedRemaining}");
+                if (state.Config.Processed.Count != state.Config.TotalItems)
+                {
+                    Console.WriteLine($">> Estimated remaining: {estimatedRemaining} - ending {DateTime.Now + estimatedRemaining}");
+                }
                 Console.WriteLine();
 
                 // backup config file after each group?
@@ -89,40 +92,32 @@ namespace SearchIndexBuilder.App.Processors.Indexing
             {
                 Console.Write($"{itm.Id} {itm.Name}...");
 
-                result = state.Endpoint.IndexItem(state.Config.Token, itm.Id, state.Config.Database, state.Config.Indexes);
+                var indexResult = state.Endpoint.IndexItem(state.Config.Token, itm.Id, state.Config.Database, state.Config.Indexes);
+                result = !indexResult.Error;
 
-                if (result == false)
+                if (indexResult.Error)
                 {
-                    RecordWarning(state, itm);
+                    var err = new ItemError() {
+                        At = DateTime.Now,
+                        Item = itm,
+                        Errors = indexResult.Activities.Select(a => a.Error).ToArray()
+                    };
+                    state.Config.Errors.Enqueue(err);
                 }
             }
             catch (Exception ex)
             {
                 result = false;
-                RecordWarning(state, itm, ex);
+                var err = new ItemError()
+                {
+                    At = DateTime.Now,
+                    Item = itm,
+                    Errors = new string[] { $"WARN: {formatException(ex)}" }
+                };
+                state.Config.Errors.Enqueue(err);
             }
 
             return result;
-        }
-
-        private void RecordWarning(ProcessState state, ItemEntry itm, Exception ex = null)
-        {
-            var err = new ItemError()
-            {
-                At = DateTime.Now,
-                Item = itm
-            };
-
-            if (ex != null)
-            {
-                err.Errors = new string[] { $"WARN: {formatException(ex)}" };
-            }
-            else
-            {
-                err.Errors = new string[] { $"WARN: Indexing error" };
-            }
-
-            state.Config.Errors.Enqueue(err);
         }
 
         private string formatException(Exception ex)
@@ -206,8 +201,10 @@ namespace SearchIndexBuilder.App.Processors.Indexing
             args.Cancel = true;
         }
 
-        public void Run()
+        public override void Run()
         {
+            base.Run();
+
             Console.WriteLine("Running indexing");
             Console.WriteLine("----------------");
 
@@ -215,6 +212,12 @@ namespace SearchIndexBuilder.App.Processors.Indexing
             if (config == null)
             {
                 Console.WriteLine($">> Error: Config file '{_options.ConfigFile}' not found");
+                return;
+            }
+
+            if (config.Processed.Count == config.TotalItems)
+            {
+                Console.WriteLine($">> No items to process.");
                 return;
             }
 

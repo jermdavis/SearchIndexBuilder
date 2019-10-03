@@ -21,9 +21,6 @@ namespace SearchIndexBuilder.App
             Console.WriteLine(@"|_____/ \___|\__,_|_|  \___|_| |_|_____|_| |_|\__,_|\___/_/\_\");
             Console.WriteLine(@"                                                       Builder");
 
-            Console.WriteLine("Pause...");
-            Console.ReadKey();
-
             //var endpointFactory = new SitecoreWebEndpointFactory();
             var endpointFactory = new FakeEndpointFactory();
 
@@ -34,10 +31,10 @@ namespace SearchIndexBuilder.App
 
             parser
                 .ParseArguments<SetupOptions, IndexingOptions, DeployOptions, RemoveOptions>(args)
-                .WithParsed<SetupOptions>(o => SetupProcessor.RunSetup(o, endpointFactory))
+                .WithParsed<SetupOptions>(o => SetupProcessor.RunProcess(o, endpointFactory))
                 .WithParsed<IndexingOptions>(o => ImprovedIndexingProcessor.RunProcess(o, endpointFactory))
-                .WithParsed<DeployOptions>(o => DeployProcessor.RunDeploy(o))
-                .WithParsed<RemoveOptions>(o => RemoveProcessor.RunRemove(o));
+                .WithParsed<DeployOptions>(o => DeployProcessor.RunProcess(o))
+                .WithParsed<RemoveOptions>(o => RemoveProcessor.RunProcess(o));
         }
     }
 

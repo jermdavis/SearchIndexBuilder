@@ -4,7 +4,7 @@ namespace SearchIndexBuilder.App.Processors.Setup
 {
 
     [Verb("setup", HelpText = "Fetches config data for a rebuild operation from a target server")]
-    public class SetupOptions
+    public class SetupOptions : CoreOptions
     {
         [Option('u', "url", Required = true, HelpText = "The URL for the SearchIndexBuilder endpoint")]
         public string Url { get; set; }

@@ -1,5 +1,5 @@
-﻿namespace SearchIndexBuilder.App.Processors.Indexing
-{
+﻿namespace SearchIndexBuilder.App.Processors
+{ 
     public interface IVerbProcessor
     {
         void Run();
