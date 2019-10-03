@@ -66,6 +66,8 @@
     <Compile Include="Processors\ItemFailure.cs" />
     <Compile Include="Processors\Remove\RemoveOptions.cs" />
     <Compile Include="Processors\Remove\RemoveProcessor.cs" />
+    <Compile Include="Processors\Retry\RetryOptions.cs" />
+    <Compile Include="Processors\Retry\RetryProcessor.cs" />
     <Compile Include="Processors\Setup\SetupOptions.cs" />
     <Compile Include="EndpointProxies\Activity.cs" />
     <Compile Include="EndpointProxies\FakeEndpoint.cs" />
