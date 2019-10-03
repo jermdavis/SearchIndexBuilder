@@ -2,6 +2,7 @@
 
 namespace SearchIndexBuilder.App.Processors.Remove
 {
+
     [Verb("remove", HelpText = "Remove the endpoint from the specified website")]
     public class RemoveOptions : CoreOptions
     {

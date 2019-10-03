@@ -6,7 +6,6 @@
  ____) |  __/ (_| | | | (__| | | |_| |_| | | | (_| |  __/>  <
 |_____/ \___|\__,_|_|  \___|_| |_|_____|_| |_|\__,_|\___/_/\_\
                                                        Builder
-
 </pre>
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
@@ -97,7 +96,21 @@ the format `backup-<date>-<time>-<config>.json` so that you can revert to this p
 
 The updated config is also saved to disk when the tool finishes normally - giving a record of items which caused problems.
 
-## Step 4: Removing the endpoint
+## Step 4: Retrying errored items
+
+If you have a config file with errors recorded in it, and you want to re-process those items, you can use the `retry` verb to generate a new config file
+from the processed one. It will clear the processed items, elapsed time and attempts count data, and add any errors into the items list. You can then re-run
+the `index` verb.
+
+`SearchIndexBuilder.App.exe Deploy [-s <source config file>] [-t <target config file>] [-o]` 
+
+The parameters are:
+
+* `-s` / `-source` (Optional, string) : The config file you've already run, that you want to retry the errors from. Defaults to `config.json`. e.g. `-s currentSite.json`
+* `-t` / `-target` (Optional, string) : The new config file you want to save the results to. Defaults to `retry-config.json`. e.g. `-t "retry currentSite.json"`
+* `-o` / `-overwrite` (Optional) : If the target file exists, it can be overwritten if this flag is provided.
+
+## Step 5: Removing the endpoint
 
 Once you're finished, you should remove the endpoint file from the target website. You can do that by just deleting the file, but the tool
 can do this for you with the `Remove` verb.
