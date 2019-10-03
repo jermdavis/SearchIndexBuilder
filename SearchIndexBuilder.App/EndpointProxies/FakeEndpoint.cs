@@ -44,7 +44,7 @@ namespace SearchIndexBuilder.App.EndpointProxies
             };
         }
 
-        public IndexResult IndexItem(string token, Guid id, string databaseName, IEnumerable<string> indexes)
+        public IndexResult IndexItem(string token, Guid id, string databaseName, IEnumerable<string> indexes, int timeout)
         {
             System.Threading.Thread.Sleep(50 + _rnd.Next(5000));
 

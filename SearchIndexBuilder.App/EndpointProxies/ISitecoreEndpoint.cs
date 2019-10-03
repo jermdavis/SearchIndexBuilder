@@ -9,7 +9,7 @@ namespace SearchIndexBuilder.App.EndpointProxies
         IEnumerable<string> FetchDatabases(string token);
         IEnumerable<ItemEntry> FetchItemIds(string token, string database, string query);
         IEnumerable<string> FetchIndexes(string token);
-        IndexResult IndexItem(string token, Guid id, string databaseName, IEnumerable<string> indexes);
+        IndexResult IndexItem(string token, Guid id, string databaseName, IEnumerable<string> indexes, int timeout);
     }
 
 }

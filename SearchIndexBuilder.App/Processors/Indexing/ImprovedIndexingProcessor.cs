@@ -89,7 +89,7 @@ namespace SearchIndexBuilder.App.Processors.Indexing
             {
                 Console.Write($"{itm.Id} {itm.Name}...");
 
-                var indexResult = state.Endpoint.IndexItem(state.Config.Token, itm.Id, state.Config.Database, state.Config.Indexes);
+                var indexResult = state.Endpoint.IndexItem(state.Config.Token, itm.Id, state.Config.Database, state.Config.Indexes, state.Options.Timeout);
                 result = !indexResult.Error;
 
                 if (indexResult.Error)

@@ -181,6 +181,10 @@
         var dbName = Request["db"];
         var indexName = Request["idx"];
 
+        int timeout = 60;
+        int.TryParse(Request["to"], out timeout);
+        Page.Server.ScriptTimeout = timeout;
+
         if (string.IsNullOrWhiteSpace(itemId) || string.IsNullOrWhiteSpace(indexName) || string.IsNullOrWhiteSpace(dbName))
         {
             noCommandResponse();

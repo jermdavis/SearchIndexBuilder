@@ -89,6 +89,7 @@ The parameters are:
   increasing amount after each error. The default value is five retries. e.g. `-r 10`
 * `-p` / `-pause` (Optional, integer) : If you want to lower the impact of the indexing process on your target server then you can use this
   parameter to add a pause between each item indexing request. The value is in milliseconds. e.g. `-p 250`
+* `-t` / `-timeout` (Optional, integer) : The default timeout for HTTP operations with Sitecore is 60 seconds. You can specify a longer timeout (in seconds) using this flag.
 
 You can stop the tool safely with `Ctrl-C`. It will finish its current operation, and then end. The current state (specifically what items are left to process, and what errors
 have been recorded - both transient and permenant) will be written to disk in the config file. The previous state of the config fill will be preserved in a backup file named with

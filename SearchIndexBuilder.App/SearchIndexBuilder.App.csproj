@@ -52,6 +52,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
+    <Compile Include="EndpointProxies\ExtendedTimeoutWebClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="EndpointProxies\IndexResult.cs" />
     <Compile Include="Processors\Deploy\DeployOptions.cs" />
     <Compile Include="Processors\BaseProcessor.cs" />
