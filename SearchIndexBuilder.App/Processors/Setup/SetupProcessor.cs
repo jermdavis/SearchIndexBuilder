@@ -44,7 +44,6 @@ namespace SearchIndexBuilder.App.Processors.Setup
 
             ISitecoreEndpoint endPoint = _endpointFactory.Create(_options.Url);
 
-            string data;
             try
             {
                 Console.Write("Fetching indexes...");
@@ -54,10 +53,6 @@ namespace SearchIndexBuilder.App.Processors.Setup
                 Console.Write("Fetching item data...");
                 var items = endPoint.FetchItemIds(cfg.Token, _options.Database, _options.Query);
                 cfg.Items = new Queue<ItemEntry>(items);
-                Console.WriteLine();
-
-                Console.Write("Serialising config...");
-                data = Newtonsoft.Json.JsonConvert.SerializeObject(cfg, Newtonsoft.Json.Formatting.Indented);
                 Console.WriteLine();
             }
             catch(Exception ex)
@@ -79,12 +74,10 @@ namespace SearchIndexBuilder.App.Processors.Setup
             }
 
             Console.Write("Saving config to disk...");
-            using (var file = File.CreateText(_options.ConfigFile))
-            {
-                file.WriteLine(data);
-            }
-            Console.WriteLine();
+            var cm = new ConfigFileManager();
+            cm.Save(_options.ConfigFile, cfg);
 
+            Console.WriteLine();
             Console.WriteLine($"Config written to {_options.ConfigFile}");
         }
     }

@@ -44,20 +44,25 @@ namespace SearchIndexBuilder.App.EndpointProxies
             };
         }
 
-        public IndexResult IndexItem(string token, Guid id, string databaseName, IEnumerable<string> indexes, int timeout)
+        public IndexResult IndexItem(string token, ItemEntry itm, string databaseName, IEnumerable<string> indexes, int timeout)
         {
-            System.Threading.Thread.Sleep(50 + _rnd.Next(5000));
+            System.Threading.Thread.Sleep(50 + _rnd.Next(2500));
 
             int rnd = _rnd.Next(10);
 
-            if(rnd >= 4)
+            if(itm.Name == "two")
             {
-                return new IndexResult(new Activity[] { new Activity() { Index = "sitecore_test_index", Uri = "http://uri/test?2", Error = "Stuff broke", Messages = new string[] { "Thing one", "Thing two" } } });
+                return new IndexResult(new Activity[] { new Activity() { Index = "sitecore_test_index", Uri = "http://uri/test?2", Error = "Item two always fails internally", Messages = new string[] { "Thing one" } } });
+            }
+
+            if(rnd == 2)
+            {
+                return new IndexResult(new Activity[] { new Activity() { Index = "sitecore_test_index", Uri = "http://uri/test?2", Error = "Error from indexing", Messages = new string[] { "Thing one", "Thing two" } } });
             }
 
             if(rnd == 3)
             {
-                throw new ArgumentException("Error", new Exception("Something broke!"));
+                throw new ArgumentException("Error", new Exception("Exception thrown!"));
             }
 
             return new IndexResult(new Activity[] { new Activity() { Index = "sitecore_test_index", Uri = "http://uri/test?2", Messages = new string[] { "Thing one", "Thing two" } } });

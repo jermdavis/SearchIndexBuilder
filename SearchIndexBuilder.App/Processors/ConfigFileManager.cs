@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace SearchIndexBuilder.App.Processors.Indexing
+namespace SearchIndexBuilder.App.Processors
 {
     public class ConfigFileManager
     {

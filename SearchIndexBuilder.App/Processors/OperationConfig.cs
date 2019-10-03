@@ -17,7 +17,7 @@ namespace SearchIndexBuilder.App.Processors
         public IEnumerable<string> Indexes { get; set; }
         public Queue<ItemEntry> Items { get; set; }
         public Queue<ItemEntry> Processed { get; set; }
-        public Queue<ItemError> Errors { get; set; }
+        public Queue<ItemFailure> Errors { get; set; }
 
         [JsonIgnore]
         public int TotalItems { get { return Items.Count + Processed.Count; } }
@@ -32,7 +32,7 @@ namespace SearchIndexBuilder.App.Processors
             }
             if(Errors == null)
             {
-                Errors = new Queue<ItemError>();
+                Errors = new Queue<ItemFailure>();
             }
         }
     }
