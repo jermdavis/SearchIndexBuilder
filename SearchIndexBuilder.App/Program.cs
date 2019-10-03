@@ -24,7 +24,8 @@ namespace SearchIndexBuilder.App
             Console.WriteLine("Pause...");
             Console.ReadKey();
 
-            var endpointFactory = new SitecoreWebEndpointFactory();
+            //var endpointFactory = new SitecoreWebEndpointFactory();
+            var endpointFactory = new FakeEndpointFactory();
 
             var parser = new Parser(s => {
                 s.HelpWriter = Console.Error;

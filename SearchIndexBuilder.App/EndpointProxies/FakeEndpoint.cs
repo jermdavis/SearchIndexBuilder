@@ -34,8 +34,6 @@ namespace SearchIndexBuilder.App.EndpointProxies
 
         public IEnumerable<ItemEntry> FetchItemIds(string token, string database, string query)
         {
-            System.Threading.Thread.Sleep(5000);
-
             return new ItemEntry[] {
                 new ItemEntry() { Name="one", Id=Guid.NewGuid() },
                 new ItemEntry() { Name="two", Id=Guid.NewGuid() },
