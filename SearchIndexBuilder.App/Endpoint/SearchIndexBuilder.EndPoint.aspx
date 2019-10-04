@@ -150,6 +150,7 @@
         public string Index { get; internal set; }
         public string[] Messages { get; internal set; }
         public string Error { get; internal set; }
+        public long Total { get; internal set; }
 
         public void Clear()
         {
@@ -157,6 +158,7 @@
             Index = string.Empty;
             Messages = null;
             Error = null;
+            Total = 0;
         }
     }
 
@@ -166,7 +168,7 @@
 
         public void FlushActivity(Activity a)
         {
-            _items.Add(new { uri = a.Uri, idx = a.Index, msg = a.Messages, err = a.Error });
+            _items.Add(new { uri = a.Uri, idx = a.Index, msg = a.Messages, err = a.Error, total = a.Total });
         }
 
         public string Flush()
@@ -239,6 +241,7 @@
                             string[] strArray = new string[job.Status.Messages.Count];
                             job.Status.Messages.CopyTo(strArray, 0);
                             activity.Messages = strArray;
+                            activity.Total = job.Status.Total;
 
                             log.FlushActivity(activity);
 

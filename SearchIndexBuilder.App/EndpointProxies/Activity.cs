@@ -10,6 +10,7 @@
         public string Index { get; set; }
         public string[] Messages { get; set; }
         public string Error { get; set; }
+        public long Total { get; set; }
     }
 
 }

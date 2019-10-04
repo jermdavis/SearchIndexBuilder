@@ -16,6 +16,11 @@ This tool tries to help with that by managing the indexing operation from outsid
 something causes the web app to recycle, this tool will detect the error and back off before retrying and continuing
 the process. You can also stop the process and restart it later if necessary.
 
+It will also try to manage errors raised by the Sitecore indexing process - but this behaviour is somewhat limited
+by the data returned from an indexing job by Sitecore. As far as I can tell, most internal failures return a message
+that still looks like success - even if, say, a computed field threw an exception. So you will need to check
+your crawler log to investigate whether any errors which were unreported by Sitecore occurred.
+
 This hasn't been exhaustively tested, as it was something I hacked together to help with a work problem. But it's been
 tried against both Solr and Lucene indexes, with Sitecore v7.1, v7.2 & v9.0 - but in theory it should work with V7.0 and up.
 
