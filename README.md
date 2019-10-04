@@ -80,7 +80,7 @@ To start the process of re-indexing, you use the `Index` verb. This will take a 
 items it specifies. Using the endpoint you've deployed, the tool will ask Sitecore to reindex each of the items, using each of the indexes
 you have specified. 
 
-`SearchIndexBuilder.App.exe Index [-c <config file>][-o <output Every X items>] [-r <retries in case of error>] [-p <ms to pause for>]`
+`SearchIndexBuilder.App.exe Index [-c <config file>][-o <output Every X items>] [-r <retries in case of error>] [-p <ms to pause for>] [-t <seconds>]`
 
 The parameters are:
 
@@ -134,4 +134,4 @@ The system also supports some global parameters, which will affect all of the ve
 * `-a` / `-attach` (Optional) : Causes the processing to pause between parsing the command line options and starting any processing.
   This allows you to attach a debugger if you need to.
 * `-f` / `-fake` (Optional) : Makes the code use a "fake" object as the endpoint proxy class - allowing it to process some data without a
-  connection to Sitecore being possible.
+  connection to Sitecore being possible. It generates random results for whatever data is being processed.
