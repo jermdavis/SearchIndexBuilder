@@ -30,7 +30,7 @@ namespace SearchIndexBuilder.App
             parser
                 .ParseArguments<SetupOptions, IndexingOptions, DeployOptions, RemoveOptions, RetryOptions>(args)
                 .WithParsed<SetupOptions>(o => SetupProcessor.RunProcess(o))
-                .WithParsed<IndexingOptions>(o => ImprovedIndexingProcessor.RunProcess(o))
+                .WithParsed<IndexingOptions>(o => IndexingProcessor.RunProcess(o))
                 .WithParsed<DeployOptions>(o => DeployProcessor.RunProcess(o))
                 .WithParsed<RemoveOptions>(o => RemoveProcessor.RunProcess(o))
                 .WithParsed<RetryOptions>(o => RetryProcessor.RunProcess(o));
