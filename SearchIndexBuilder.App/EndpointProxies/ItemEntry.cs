@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace SearchIndexBuilder.App.EndpointProxies
 {
@@ -8,7 +9,9 @@ namespace SearchIndexBuilder.App.EndpointProxies
     /// </summary>
     public class ItemEntry
     {
+        [JsonProperty(PropertyName = "n")]
         public string Name { get; set; }
+        [JsonProperty(PropertyName = "i")]
         public Guid Id { get; set; }
     }
 

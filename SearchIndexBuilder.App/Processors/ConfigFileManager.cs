@@ -35,7 +35,7 @@ namespace SearchIndexBuilder.App.Processors
             if (File.Exists(filename))
             {
                 var now = DateTime.Now;
-                var newFile = $"backup-{now.ToString("yyyyMMdd-hhmm")}-{filename}";
+                var newFile = $"backup-{now.ToString("yyyyMMdd-hhmmss")}-{filename}";
 
                 File.Move(filename, newFile);
 

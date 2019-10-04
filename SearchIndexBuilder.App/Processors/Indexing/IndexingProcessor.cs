@@ -8,18 +8,18 @@ using System.Threading.Tasks;
 namespace SearchIndexBuilder.App.Processors.Indexing
 {
 
-    public class ImprovedIndexingProcessor : BaseProcessor<IndexingOptions>
+    public class IndexingProcessor : BaseProcessor<IndexingOptions>
     {
         public static void RunProcess(IndexingOptions options)
         {
-            var ip = new ImprovedIndexingProcessor(options);
+            var ip = new IndexingProcessor(options);
             ip.Run();
         }
 
         private ConfigFileManager _configFileManager;
         private bool _cancelTriggered = false;
 
-        public ImprovedIndexingProcessor(IndexingOptions options) : base(options)
+        public IndexingProcessor(IndexingOptions options) : base(options)
         {
             _configFileManager = new ConfigFileManager();
             _options = options;
