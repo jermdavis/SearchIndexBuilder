@@ -96,7 +96,7 @@
         var items = db.SelectItems(query);
 
         var data = items
-            .Select(i => new { Name = i.Name, Id = i.ID.ToString() });
+            .Select(i => new { n = i.Name, i = i.ID.ToString() });
 
         var response = Newtonsoft.Json.JsonConvert.SerializeObject(data);
 
@@ -135,7 +135,7 @@
         }
 
         var data = items
-            .Select(k => new { Name = k.Value, Id = k.Key });
+            .Select(k => new { n = k.Value, i = k.Key });
 
         var response = Newtonsoft.Json.JsonConvert.SerializeObject(data);
 
