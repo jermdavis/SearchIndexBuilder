@@ -1,11 +1,11 @@
 <pre>
-  _____                     _     _____           _
- / ____|                   | |   |_   _|         | |
-| (___   ___  __ _ _ __ ___| |__   | |  _ __   __| | _____  _
+  _____                     _     _____           _           
+ / ____|   Sitecore        | |   |_   _|         | |          
+| (___   ___  __ _ _ __ ___| |__   | |  _ __   __| | _____  _ 
  \___ \ / _ \/ _` | '__/ __| '_ \  | | | '_ \ / _` |/ _ \ \/ /
- ____) |  __/ (_| | | | (__| | | |_| |_| | | | (_| |  __/>  <
+ ____) |  __/ (_| | | | (__| | | |_| |_| | | | (_| |  __/>  < 
 |_____/ \___|\__,_|_|  \___|_| |_|_____|_| |_|\__,_|\___/_/\_\
-                                                       Builder
+                                                   Builder    
 </pre>
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
@@ -31,7 +31,7 @@ Grab a [release](/jermdavis/SearchIndexBuilder/releases) and then make use of th
 The first step in running the tool is to deploy the special endpoint it uses into your sitecore application. The tool can
 do this with the `Deploy` verb:
 
-`SearchIndexBuilder.App.exe Deploy -w <your website folder> [-o] [-t <token>]` 
+`SearchIndexBuilder.exe deploy -w <your website folder> [-o] [-t <token>]` 
 
 The parameters are:
 
@@ -50,7 +50,7 @@ You must complete this step before proceeding.
 To run an indexing job, the tool relies on a JSON file which specifies job configuration and settings. You can write this file manually if
 you want to, but the tool will generate it for you using the `Setup` verb.
 
-`SearchIndexBuilder.App.exe Setup -u <url of the endpoint> -d <database> -t <token> [-q <query for items>] [-c <config file name>] [-o]`
+`SearchIndexBuilder.exe setup -u <url of the endpoint> -d <database> -t <token> [-q <query for items>] [-c <config file name>] [-o]`
 
 The parameters are:
 
@@ -80,7 +80,7 @@ To start the process of re-indexing, you use the `Index` verb. This will take a 
 items it specifies. Using the endpoint you've deployed, the tool will ask Sitecore to reindex each of the items, using each of the indexes
 you have specified. 
 
-`SearchIndexBuilder.App.exe Index [-c <config file>][-o <output Every X items>] [-r <retries in case of error>] [-p <ms to pause for>] [-t <seconds>]`
+`SearchIndexBuilder.exe index [-c <config file>] [-o <output Every X items>] [-r <retries in case of error>] [-p <ms to pause for>] [-t <seconds>]`
 
 The parameters are:
 
@@ -107,7 +107,7 @@ If you have a config file with errors recorded in it, and you want to re-process
 from the processed one. It will clear the processed items, elapsed time and attempts count data, and add any errors into the items list. You can then re-run
 the `index` verb.
 
-`SearchIndexBuilder.App.exe Deploy [-s <source config file>] [-t <target config file>] [-o]` 
+`SearchIndexBuilder.exe retry [-s <source config file>] [-t <target config file>] [-o]` 
 
 The parameters are:
 
@@ -120,7 +120,7 @@ The parameters are:
 Once you're finished, you should remove the endpoint file from the target website. You can do that by just deleting the file, but the tool
 can do this for you with the `Remove` verb.
 
-`SearchIndexBuilder.App.exe Remove -w <your website folder>`
+`SearchIndexBuilder.exe remove -w <your website folder>`
 
 The parameters are:
 
