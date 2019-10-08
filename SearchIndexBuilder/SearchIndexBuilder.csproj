@@ -62,6 +62,7 @@
     <Compile Include="Processors\ConfigFileManager.cs" />
     <Compile Include="Processors\CoreOptions.cs" />
     <Compile Include="Processors\Indexing\IndexingProcessor.cs" />
+    <Compile Include="TimeSpanExtensions.cs" />
     <Compile Include="Processors\IVerbProcessor.cs" />
     <Compile Include="Processors\ItemFailure.cs" />
     <Compile Include="Processors\Remove\RemoveOptions.cs" />
