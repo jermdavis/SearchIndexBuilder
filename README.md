@@ -99,6 +99,10 @@ You can stop the tool safely with `Ctrl-C`. It will finish its current operation
 have been recorded - both transient and permenant) will be written to disk in the config file. The previous state of the config fill will be preserved in a backup file named with
 the format `backup-<date>-<time>-<config>.json` so that you can revert to this previous state if necessary.
 
+To try and help with situations where the tool fails unexpectedly, it will also write (and overwrite) a file name `RuntimeBackup-<config>.json` each time the tool outputs
+statistics as part of the `-outputEvery` option. This is the current state of the job configuration. It will also pay attention to remaining disk space - and if it gets down
+to less than 1.25 times the size of the last backup written, the indexing job will be cancelled in order to prevent data loss due to running out of disk space.
+
 The updated config is also saved to disk when the tool finishes normally - giving a record of items which caused problems.
 
 ## Step 4: Retrying errored items
