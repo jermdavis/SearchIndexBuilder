@@ -46,10 +46,33 @@ namespace SearchIndexBuilder.Processors.Indexing
                 }
                 Console.WriteLine();
 
-                // backup config file after each group?
+                if (state.Config.Items.Count > 0 && !_cancelTriggered)
+                {
+                    BackupAndVerifyDiskSpace(state);
+                }
             }
 
             Console.CancelKeyPress -= CancelHandler;
+        }
+
+        private void BackupAndVerifyDiskSpace(ProcessState state)
+        {
+            var filename = "RuntimeBackup-" + state.Options.ConfigFile;
+
+            Console.WriteLine(">>Saving backup");
+            _configFileManager.Save(filename, state.Config);
+
+            var saveSize = _configFileManager.SizeOfSave(filename);
+            saveSize = saveSize + (saveSize / 4); // 1.25 times is a safety margin
+
+            var path = System.IO.Path.GetFullPath(filename);
+            var drive = new System.IO.DriveInfo(path);
+
+            if(drive.AvailableFreeSpace < saveSize)
+            {
+                Console.WriteLine(">>There is no longer sufficient free disk space to save safely. Aborting.");
+                _cancelTriggered = true;
+            }
         }
 
         private void ProcessGroup(ProcessState state)

@@ -34,6 +34,13 @@ namespace SearchIndexBuilder.Processors
             }
         }
 
+        public long SizeOfSave(string filename)
+        {
+            var fi = new FileInfo(filename);
+
+            return fi.Length;
+        }
+
         public string Backup(string filename)
         {
             if (File.Exists(filename))
