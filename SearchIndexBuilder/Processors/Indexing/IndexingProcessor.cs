@@ -35,21 +35,42 @@ namespace SearchIndexBuilder.Processors.Indexing
 
                 var percentage = (float)state.Config.Processed.Count / (float)state.Config.TotalItems * 100f;
 
-                Console.WriteLine();
-                Console.WriteLine($">> {state.Config.Processed.Count}/{state.Config.TotalItems}. ({percentage:0.00}%) Time: {state.Average.CurrentAverage().TotalMilliseconds}ms");
+                Console.WriteLine($">> {state.Config.Processed.Count}/{state.Config.TotalItems}. ({percentage:0}%) Time: {state.Average.CurrentAverage().FormatForDisplay(true)}");
 
                 var estimatedRemaining = new TimeSpan(state.Average.CurrentAverage().Ticks * state.Config.Items.Count);
 
                 if (state.Config.Processed.Count != state.Config.TotalItems)
                 {
-                    Console.WriteLine($">> Estimated remaining: {estimatedRemaining} - ending {DateTime.Now + estimatedRemaining}");
+                    Console.WriteLine($@">> Estimated remaining: {estimatedRemaining.FormatForDisplay(true)} - ending {DateTime.Now + estimatedRemaining}");
                 }
-                Console.WriteLine();
 
-                // backup config file after each group?
+                if (state.Config.Items.Count > 0 && !_cancelTriggered)
+                {
+                    BackupAndVerifyDiskSpace(state);
+                }
             }
 
             Console.CancelKeyPress -= CancelHandler;
+        }
+
+        private void BackupAndVerifyDiskSpace(ProcessState state)
+        {
+            var filename = "RuntimeBackup-" + state.Options.ConfigFile;
+
+            Console.WriteLine(">> Saving backup");
+            _configFileManager.Save(filename, state.Config);
+
+            var saveSize = _configFileManager.SizeOfSave(filename);
+            saveSize = saveSize + (saveSize / 4); // 1.25 times is a safety margin
+
+            var path = System.IO.Path.GetFullPath(filename);
+            var drive = new System.IO.DriveInfo(path);
+
+            if(drive.AvailableFreeSpace < saveSize)
+            {
+                Console.WriteLine(">> There is no longer sufficient free disk space to save safely. Aborting.");
+                _cancelTriggered = true;
+            }
         }
 
         private void ProcessGroup(ProcessState state)
@@ -150,12 +171,12 @@ namespace SearchIndexBuilder.Processors.Indexing
                     state.Config.Processed.Enqueue(state.Config.Items.Dequeue());
 
                     state.Config.Errors.Enqueue(new ItemFailure() { At=DateTime.Now, Item = itm, Errors = new string[] { "Too many retries - aborting" }, FailureType = FailureType.Error });
-                    Console.WriteLine($"\r{itm.Id} {itm.Name} -- {state.sw.Elapsed.TotalMilliseconds}ms -- Too many retries");
+                    Console.WriteLine($"\r{itm.Id} {itm.Name} -- {state.sw.Elapsed.FormatForDisplay(true)} -- Too many retries");
                 }
                 else
                 {
                     retries += 1;
-                    Console.WriteLine($"\r{itm.Id} {itm.Name} -- {state.sw.Elapsed.TotalMilliseconds}ms -- Warning #{retries}");
+                    Console.WriteLine($"\r{itm.Id} {itm.Name} -- {state.sw.Elapsed.FormatForDisplay(true)} -- Warning #{retries}");
                     RandomBackOff(retries);
                 }
             }
@@ -167,7 +188,7 @@ namespace SearchIndexBuilder.Processors.Indexing
                     msg = " - Transient error corrected";
                 }
 
-                Console.WriteLine($"\r{itm.Id} {itm.Name} -- {state.sw.Elapsed.TotalMilliseconds}ms{msg}");
+                Console.WriteLine($"\r{itm.Id} {itm.Name} -- {state.sw.Elapsed.FormatForDisplay(true)}{msg}");
                 state.Config.Processed.Enqueue(state.Config.Items.Dequeue());
                 processed += 1;
                 retries = 0;
@@ -177,7 +198,7 @@ namespace SearchIndexBuilder.Processors.Indexing
         private static void RandomBackOff(int errorCount)
         {
             int msToWait = 1000 + (1000 * (errorCount * errorCount));
-            Console.WriteLine($">> Backing off for {msToWait}ms");
+            Console.WriteLine($">> Backing off for {TimeSpan.FromMilliseconds(msToWait).FormatForDisplay(true)}");
             System.Threading.Thread.Sleep(msToWait);
         }
 
@@ -233,11 +254,10 @@ namespace SearchIndexBuilder.Processors.Indexing
 
             SaveState(state);
 
-            Console.WriteLine();
             Console.WriteLine($">> Finished");
-            Console.WriteLine($">>   at {endedAt} - after {elapsed}");
+            Console.WriteLine($">>   at {endedAt} - after {elapsed.FormatForDisplay()}");
             Console.WriteLine($">>   with {state.Config.Errors.Count()} errors");
-            Console.WriteLine($">>   total time now {state.Config.Elapsed} after {state.Config.Attempts} attempts.");
+            Console.WriteLine($">>   total time now {state.Config.Elapsed.FormatForDisplay()} after {state.Config.Attempts} attempts.");
         }
     }
 
