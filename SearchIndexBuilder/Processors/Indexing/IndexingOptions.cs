@@ -19,7 +19,7 @@ namespace SearchIndexBuilder.Processors.Indexing
         public int Pause { get; set; } = 0;
 
         [Option('t', "timeout", Required = false, HelpText = "Allows you to specify a longer timeout for indexing operations. Expressed in seconds.")]
-        public int Timeout { get; set; } = 60;
+        public int Timeout { get; set; } = -1;
     }
 
 }

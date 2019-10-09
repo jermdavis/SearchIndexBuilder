@@ -25,6 +25,27 @@ namespace SearchIndexBuilder.Processors.Indexing
             _options = options;
         }
 
+        private void SetTimeout(ProcessState state)
+        {
+            if (state.Options.Timeout < 0)
+            {
+                if (state.Config.Timeout > 0)
+                {
+                    state.Options.Timeout = state.Config.Timeout;
+                    Console.WriteLine($">> Using timeout setting from config file: {state.Options.Timeout}s");
+                }
+                else
+                {
+                    state.Options.Timeout = 60;
+                    Console.WriteLine($">> No timeout settings found. Using default: {state.Options.Timeout}s");
+                }
+            }
+            else
+            {
+                Console.WriteLine($">> Using timeout setting from command line: {state.Options.Timeout}s");
+            }
+        }
+
         private void ProcessAllGroups(ProcessState state)
         {
             Console.CancelKeyPress += CancelHandler;
@@ -33,16 +54,7 @@ namespace SearchIndexBuilder.Processors.Indexing
             {
                 ProcessGroup(state);
 
-                var percentage = (float)state.Config.Processed.Count / (float)state.Config.TotalItems * 100f;
-
-                Console.WriteLine($">> {state.Config.Processed.Count}/{state.Config.TotalItems}. ({percentage:0}%) Time: {state.Average.CurrentAverage().FormatForDisplay(true)}");
-
-                var estimatedRemaining = new TimeSpan(state.Average.CurrentAverage().Ticks * state.Config.Items.Count);
-
-                if (state.Config.Processed.Count != state.Config.TotalItems)
-                {
-                    Console.WriteLine($@">> Estimated remaining: {estimatedRemaining.FormatForDisplay(true)} - ending {DateTime.Now + estimatedRemaining}");
-                }
+                DisplayGroupStats(state);
 
                 if (state.Config.Items.Count > 0 && !_cancelTriggered)
                 {
@@ -51,6 +63,20 @@ namespace SearchIndexBuilder.Processors.Indexing
             }
 
             Console.CancelKeyPress -= CancelHandler;
+        }
+
+        private void DisplayGroupStats(ProcessState state)
+        {
+            var percentage = (float)state.Config.Processed.Count / (float)state.Config.TotalItems * 100f;
+
+            Console.WriteLine($">> {state.Config.Processed.Count}/{state.Config.TotalItems}. ({percentage:0}%) Time: {state.Average.CurrentAverage().FormatForDisplay(true)}");
+
+            var estimatedRemaining = new TimeSpan(state.Average.CurrentAverage().Ticks * state.Config.Items.Count);
+
+            if (state.Config.Processed.Count != state.Config.TotalItems)
+            {
+                Console.WriteLine($@">> Estimated remaining: {estimatedRemaining.FormatForDisplay(true)} - ending {DateTime.Now + estimatedRemaining}");
+            }
         }
 
         private void BackupAndVerifyDiskSpace(ProcessState state)
@@ -245,6 +271,8 @@ namespace SearchIndexBuilder.Processors.Indexing
             var state = new ProcessState(endPoint, _options, config);
             state.Config.Attempts += 1;
             var startedAt = DateTime.Now;
+
+            SetTimeout(state);
 
             ProcessAllGroups(state);
 

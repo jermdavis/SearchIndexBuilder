@@ -70,6 +70,7 @@ The parameters are:
   If you want to write to a different name or location, specify it with this parameter. e.g. `-c mySite.json`
 * `-o` / `-overwrite` (Optional) : By default the tool will not overwrite an existing config file if one is found. If you do want
   to overwrite the existing file, add this parameter.
+* `-t` / `-timeout` (Optional, integer) : The default timeout for HTTP operations with Sitecore is 60 seconds. You can specify a longer timeout (in seconds) using this flag.
 
 The config file will include all the Sitecore indexes defined on your site by default. If you only want to build certain indexes, use a text editor to
 remove the unwanted ones from the JSON data. Just remember not to break the format of the file.
@@ -93,7 +94,7 @@ The parameters are:
   increasing amount after each error. The default value is five retries. e.g. `-r 10`
 * `-p` / `-pause` (Optional, integer) : If you want to lower the impact of the indexing process on your target server then you can use this
   parameter to add a pause between each item indexing request. The value is in milliseconds. e.g. `-p 250`
-* `-t` / `-timeout` (Optional, integer) : The default timeout for HTTP operations with Sitecore is 60 seconds. You can specify a longer timeout (in seconds) using this flag.
+* `-t` / `-timeout` (Optional, integer) : For convenience, you can override the timeout taken from the `setup` config above, with this optional parameter.
 
 You can stop the tool safely with `Ctrl-C`. It will finish its current operation, and then end. The current state (specifically what items are left to process, and what errors
 have been recorded - both transient and permenant) will be written to disk in the config file. The previous state of the config fill will be preserved in a backup file named with
