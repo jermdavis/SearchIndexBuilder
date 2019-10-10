@@ -27,7 +27,9 @@ namespace SearchIndexBuilder.Processors
                 Console.ReadKey();
             }
 
-            _configFileManager = new JsonConfigFileManager();
+            //_configFileManager = new GZipStreamConfigFileManager();
+            //_configFileManager = new ZipArchiveConfigFileManager();
+            _configFileManager = new TextConfigFileManager();
 
             if(_options.Fake)
             {

@@ -42,6 +42,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -56,13 +57,15 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="EndpointProxies\IndexResult.cs" />
+    <Compile Include="Processors\CoreConfigFileManager.cs" />
     <Compile Include="Processors\Deploy\DeployOptions.cs" />
     <Compile Include="Processors\BaseProcessor.cs" />
     <Compile Include="Processors\FailureType.cs" />
-    <Compile Include="Processors\JsonConfigFileManager.cs" />
+    <Compile Include="Processors\TextConfigFileManager.cs" />
     <Compile Include="Processors\CoreOptions.cs" />
     <Compile Include="Processors\IConfigFileManager.cs" />
     <Compile Include="Processors\Indexing\IndexingProcessor.cs" />
+    <Compile Include="Processors\ZipArchiveConfigFileManager.cs" />
     <Compile Include="TimeSpanExtensions.cs" />
     <Compile Include="Processors\IVerbProcessor.cs" />
     <Compile Include="Processors\ItemFailure.cs" />
