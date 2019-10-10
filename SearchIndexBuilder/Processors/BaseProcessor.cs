@@ -12,6 +12,7 @@ namespace SearchIndexBuilder.Processors
     {
         protected T _options;
         protected ISitecoreEndpointFactory _endpointFactory;
+        protected IConfigFileManager _configFileManager;
 
         public BaseProcessor(T options)
         {
@@ -25,6 +26,8 @@ namespace SearchIndexBuilder.Processors
                 Console.WriteLine("Pausing for debugger - press any key to continue...");
                 Console.ReadKey();
             }
+
+            _configFileManager = new JsonConfigFileManager();
 
             if(_options.Fake)
             {

@@ -16,12 +16,10 @@ namespace SearchIndexBuilder.Processors.Indexing
             ip.Run();
         }
 
-        private ConfigFileManager _configFileManager;
         private bool _cancelTriggered = false;
 
         public IndexingProcessor(IndexingOptions options) : base(options)
         {
-            _configFileManager = new ConfigFileManager();
             _options = options;
         }
 

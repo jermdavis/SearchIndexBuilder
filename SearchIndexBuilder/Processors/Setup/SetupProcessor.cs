@@ -75,8 +75,7 @@ namespace SearchIndexBuilder.Processors.Setup
             }
 
             Console.Write("Saving config to disk...");
-            var cm = new ConfigFileManager();
-            cm.Save(_options.ConfigFile, cfg);
+            _configFileManager.Save(_options.ConfigFile, cfg);
 
             Console.WriteLine();
             Console.WriteLine($"Config written to {_options.ConfigFile}");
