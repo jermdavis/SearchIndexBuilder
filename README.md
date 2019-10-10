@@ -140,3 +140,6 @@ The system also supports some global parameters, which will affect all of the ve
   This allows you to attach a debugger if you need to.
 * `-f` / `-fake` (Optional) : Makes the code use a "fake" object as the endpoint proxy class - allowing it to process some data without a
   connection to Sitecore being possible. It generates random results for whatever data is being processed.
+* `-z` / `-ziptype` (Optional) : Allows you to apply zip compression to the config files saved by the tool. The default option is `Text`
+  to save a raw text JSON file. You can also specify `GZip` to write a raw zip stream, or `Archive` to write a normal zip file containg
+  the config data. These options will add appropriate extensions to the config file specified.

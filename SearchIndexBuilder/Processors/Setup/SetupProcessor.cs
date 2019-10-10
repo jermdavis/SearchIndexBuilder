@@ -78,7 +78,7 @@ namespace SearchIndexBuilder.Processors.Setup
             _configFileManager.Save(_options.ConfigFile, cfg);
 
             Console.WriteLine();
-            Console.WriteLine($"Config written to {_options.ConfigFile}");
+            Console.WriteLine($"Config written to {_configFileManager.VerifyFilename(_options.ConfigFile)}");
         }
     }
 

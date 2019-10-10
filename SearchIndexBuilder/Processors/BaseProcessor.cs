@@ -27,9 +27,18 @@ namespace SearchIndexBuilder.Processors
                 Console.ReadKey();
             }
 
-            //_configFileManager = new GZipStreamConfigFileManager();
-            //_configFileManager = new ZipArchiveConfigFileManager();
-            _configFileManager = new TextConfigFileManager();
+            switch(_options.ConfigFileType)
+            {
+                case ConfigFileTypes.GZip:
+                    _configFileManager = new GZipStreamConfigFileManager();
+                    break;
+                case ConfigFileTypes.Archive:
+                    _configFileManager = new ZipArchiveConfigFileManager();
+                    break;
+                default:
+                    _configFileManager = new TextConfigFileManager();
+                    break;
+            }
 
             if(_options.Fake)
             {

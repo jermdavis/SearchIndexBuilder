@@ -7,9 +7,13 @@ namespace SearchIndexBuilder.Processors
 
     public class GZipStreamConfigFileManager : CoreConfigFileManager
     {
+        public GZipStreamConfigFileManager() : base(".gzip")
+        {
+        }
+
         public override OperationConfig Load(string filename)
         {
-            using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
+            using (var file = new FileStream(VerifyFilename(filename), FileMode.Open, FileAccess.Read))
             {
                 using (var archive = new GZipStream(file, CompressionMode.Decompress, true))
                 {
@@ -33,7 +37,7 @@ namespace SearchIndexBuilder.Processors
                     }
                 }
 
-                using (var fileStream = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.Write))
+                using (var fileStream = new FileStream(VerifyFilename(filename), FileMode.OpenOrCreate, FileAccess.Write))
                 {
                     memoryStream.Seek(0, SeekOrigin.Begin);
                     memoryStream.CopyTo(fileStream);
@@ -44,9 +48,13 @@ namespace SearchIndexBuilder.Processors
 
     public class ZipArchiveConfigFileManager : CoreConfigFileManager
     {
+        public ZipArchiveConfigFileManager() : base(".zip")
+        {
+        }
+
         public override OperationConfig Load(string filename)
         {
-            using(var file = new FileStream(filename, FileMode.Open))
+            using(var file = new FileStream(VerifyFilename(filename), FileMode.Open))
             {
                 using(var archive = new ZipArchive(file, ZipArchiveMode.Read))
                 {
@@ -78,7 +86,7 @@ namespace SearchIndexBuilder.Processors
                     }
                 }
 
-                using (var fileStream = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.Write))
+                using (var fileStream = new FileStream(VerifyFilename(filename), FileMode.OpenOrCreate, FileAccess.Write))
                 {
                     memoryStream.Seek(0, SeekOrigin.Begin);
                     memoryStream.CopyTo(fileStream);

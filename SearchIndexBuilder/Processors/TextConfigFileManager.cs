@@ -8,8 +8,14 @@ namespace SearchIndexBuilder.Processors
     /// </summary>
     public class TextConfigFileManager : CoreConfigFileManager
     {
+        public TextConfigFileManager() : base(".json")
+        {
+        }
+
         public override OperationConfig Load(string filename)
         {
+            filename = VerifyFilename(filename);
+
             if (!System.IO.File.Exists(filename))
             {
                 return null;
@@ -23,7 +29,7 @@ namespace SearchIndexBuilder.Processors
 
         public override void Save(string filename, OperationConfig config)
         {
-            using (StreamWriter file = File.CreateText(filename))
+            using (StreamWriter file = File.CreateText(VerifyFilename(filename)))
             {
                 WriteConfig(file, config);
             }

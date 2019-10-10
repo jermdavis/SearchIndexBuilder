@@ -79,9 +79,9 @@ namespace SearchIndexBuilder.Processors.Indexing
 
         private void BackupAndVerifyDiskSpace(ProcessState state)
         {
-            var filename = "RuntimeBackup-" + state.Options.ConfigFile;
+            var filename = _configFileManager.RuntimeBackupFilename(state.Options.ConfigFile);
 
-            Console.WriteLine(">> Saving backup");
+            Console.WriteLine(">> Saving runtime backup");
             _configFileManager.Save(filename, state.Config);
 
             var saveSize = _configFileManager.SizeOfSave(filename);
@@ -229,10 +229,10 @@ namespace SearchIndexBuilder.Processors.Indexing
         private void SaveState(ProcessState state)
         {
             var newFile = _configFileManager.Backup(state.Options.ConfigFile);
-            Console.WriteLine($">> Moved existing config {state.Options.ConfigFile} to {newFile}");
+            Console.WriteLine($">> Moved existing config {_configFileManager.VerifyFilename(state.Options.ConfigFile)} to {_configFileManager.VerifyFilename(newFile)}");
 
             _configFileManager.Save(state.Options.ConfigFile, state.Config);
-            Console.WriteLine($">> Config saved to {state.Options.ConfigFile}");
+            Console.WriteLine($">> Config saved to {_configFileManager.VerifyFilename(state.Options.ConfigFile)}");
         }
 
         private void CancelHandler(object sender, ConsoleCancelEventArgs args)
@@ -255,7 +255,7 @@ namespace SearchIndexBuilder.Processors.Indexing
             var config = _configFileManager.Load(_options.ConfigFile);
             if (config == null)
             {
-                Console.WriteLine($">> Error: Config file '{_options.ConfigFile}' not found");
+                Console.WriteLine($">> Error: Config file '{_configFileManager.VerifyFilename(_options.ConfigFile)}' not found");
                 return;
             }
 

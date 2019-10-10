@@ -57,6 +57,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="EndpointProxies\IndexResult.cs" />
+    <Compile Include="Processors\ConfigFileTypes.cs" />
     <Compile Include="Processors\CoreConfigFileManager.cs" />
     <Compile Include="Processors\Deploy\DeployOptions.cs" />
     <Compile Include="Processors\BaseProcessor.cs" />
