@@ -22,6 +22,7 @@ namespace SearchIndexBuilder.Processors.Retry
 
         public override void Run()
         {
+            base.OverrideFileType(_options.SourceFile);
             base.Run();
 
             if (!File.Exists(_options.SourceFile))

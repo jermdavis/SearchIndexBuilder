@@ -58,10 +58,14 @@
     </Compile>
     <Compile Include="EndpointProxies\IndexResult.cs" />
     <Compile Include="Processors\ConfigFileTypes.cs" />
+    <Compile Include="Processors\ConfigFileTypesExtensions.cs" />
+    <Compile Include="Processors\Convert\ConvertOptions.cs" />
+    <Compile Include="Processors\Convert\ConvertProcessor.cs" />
     <Compile Include="Processors\CoreConfigFileManager.cs" />
     <Compile Include="Processors\Deploy\DeployOptions.cs" />
     <Compile Include="Processors\BaseProcessor.cs" />
     <Compile Include="Processors\FailureType.cs" />
+    <Compile Include="Processors\GZipStreamConfigFileManager.cs" />
     <Compile Include="Processors\TextConfigFileManager.cs" />
     <Compile Include="Processors\CoreOptions.cs" />
     <Compile Include="Processors\IConfigFileManager.cs" />

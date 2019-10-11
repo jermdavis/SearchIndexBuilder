@@ -247,6 +247,7 @@ namespace SearchIndexBuilder.Processors.Indexing
 
         public override void Run()
         {
+            base.OverrideFileType(_options.ConfigFile);
             base.Run();
 
             Console.WriteLine("Running indexing");

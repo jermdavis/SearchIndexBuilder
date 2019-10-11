@@ -8,6 +8,8 @@ namespace SearchIndexBuilder.Processors
         protected string _fileExtension;
         public abstract OperationConfig Load(string filename);
 
+        public string Extension => _fileExtension;
+
         public abstract void Save(string filename, OperationConfig config);
 
         public string VerifyFilename(string filename)

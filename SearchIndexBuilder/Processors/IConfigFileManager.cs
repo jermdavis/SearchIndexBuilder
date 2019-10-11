@@ -2,6 +2,7 @@
 {
     public interface IConfigFileManager
     {
+        string Extension { get; }
         string RuntimeBackupFilename(string filename);
         string VerifyFilename(string filename);
         string Backup(string filename);

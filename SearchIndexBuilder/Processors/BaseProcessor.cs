@@ -19,6 +19,19 @@ namespace SearchIndexBuilder.Processors
             _options = options;
         }
 
+        public void OverrideFileType(string filename)
+        {
+            if(filename.EndsWith(GZipStreamConfigFileManager.FileExtension))
+            {
+                _configFileManager = new GZipStreamConfigFileManager();
+            }
+
+            if (filename.EndsWith(ZipArchiveConfigFileManager.FileExtension))
+            {
+                _configFileManager = new ZipArchiveConfigFileManager();
+            }
+        }
+
         public virtual void Run()
         {
             if (_options.Attach)
@@ -27,18 +40,9 @@ namespace SearchIndexBuilder.Processors
                 Console.ReadKey();
             }
 
-            switch(_options.ConfigFileType)
-            {
-                case ConfigFileTypes.GZip:
-                    _configFileManager = new GZipStreamConfigFileManager();
-                    break;
-                case ConfigFileTypes.Archive:
-                    _configFileManager = new ZipArchiveConfigFileManager();
-                    break;
-                default:
-                    _configFileManager = new TextConfigFileManager();
-                    break;
-            }
+            _configFileManager = _options.ConfigFileType.Create(_configFileManager);
+
+            Console.WriteLine($"[Reading {_configFileManager.Extension} file format]");
 
             if(_options.Fake)
             {
