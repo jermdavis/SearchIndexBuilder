@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
+    <Compile Include="DebuggerWait.cs" />
     <Compile Include="EndpointProxies\ExtendedTimeoutWebClient.cs">
       <SubType>Component</SubType>
     </Compile>

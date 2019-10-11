@@ -164,7 +164,7 @@ The parameters are:
 The system also supports some global parameters, which will affect all of the verbs:
 
 * `-a` / `--attach` (Optional) : Causes the processing to pause between parsing the command line options and starting any processing.
-  This allows you to attach a debugger if you need to.
+  This allows you to attach a debugger if you need to. It will wait for a keypress, or for the debugger to attach before proceeding with execution.
 * `-f` / `--fake` (Optional) : Makes the code use a "fake" object as the endpoint proxy class - allowing it to process some data without a
   connection to Sitecore being possible. It generates random results for whatever data is being processed.
 * `-z` / `--ziptype` (Optional) : Allows you to apply zip compression to the config files saved by the tool. The default option is `Text`

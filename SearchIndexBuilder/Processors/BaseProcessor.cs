@@ -37,7 +37,8 @@ namespace SearchIndexBuilder.Processors
             if (_options.Attach)
             {
                 Console.WriteLine("Pausing for debugger - press any key to continue...");
-                Console.ReadKey();
+                var dw = new DebuggerWaiter();
+                dw.Wait();
             }
 
             _configFileManager = _options.ConfigFileType.Create(_configFileManager);
