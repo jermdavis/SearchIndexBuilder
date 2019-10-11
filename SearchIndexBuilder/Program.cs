@@ -1,4 +1,5 @@
 ﻿using CommandLine;
+using SearchIndexBuilder.Processors.Convert;
 using SearchIndexBuilder.Processors.Deploy;
 using SearchIndexBuilder.Processors.Indexing;
 using SearchIndexBuilder.Processors.Remove;
@@ -27,9 +28,10 @@ namespace SearchIndexBuilder
             });
 
             parser
-                .ParseArguments<DeployOptions, SetupOptions, IndexingOptions, RetryOptions,  RemoveOptions>(args)
+                .ParseArguments<DeployOptions, SetupOptions, ConvertOptions, IndexingOptions, RetryOptions,  RemoveOptions>(args)
                 .WithParsed<DeployOptions>(o => DeployProcessor.RunProcess(o))
                 .WithParsed<SetupOptions>(o => SetupProcessor.RunProcess(o))
+                .WithParsed<ConvertOptions>(o => ConvertProcessor.RunProcess(o))
                 .WithParsed<IndexingOptions>(o => IndexingProcessor.RunProcess(o))
                 .WithParsed<RetryOptions>(o => RetryProcessor.RunProcess(o))
                 .WithParsed<RemoveOptions>(o => RemoveProcessor.RunProcess(o));

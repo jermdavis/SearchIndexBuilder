@@ -14,6 +14,7 @@ namespace SearchIndexBuilder.Processors
         public string Url { get; set; }
         public string Token { get; set; }
         public string Database { get; set; }
+        public int Timeout { get; set; }
         public IEnumerable<string> Indexes { get; set; }
         public Queue<ItemEntry> Items { get; set; }
         public Queue<ItemEntry> Processed { get; set; }
@@ -23,6 +24,7 @@ namespace SearchIndexBuilder.Processors
         public int TotalItems { get { return Items.Count + Processed.Count; } }
         public TimeSpan Elapsed { get; set; } = TimeSpan.Zero;
         public int Attempts { get; set; }
+        
 
         public void EnsureCollections()
         {

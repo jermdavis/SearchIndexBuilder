@@ -22,6 +22,7 @@ namespace SearchIndexBuilder.Processors.Retry
 
         public override void Run()
         {
+            base.OverrideFileType(_options.SourceFile);
             base.Run();
 
             if (!File.Exists(_options.SourceFile))
@@ -37,12 +38,11 @@ namespace SearchIndexBuilder.Processors.Retry
                 return;
             }
 
-            var cl = new ConfigFileManager();
-            var cfg = cl.Load(_options.SourceFile);
+            var cfg = _configFileManager.Load(_options.SourceFile);
 
             UpdateConfigData(cfg);
 
-            cl.Save(_options.TargetFile, cfg);
+            _configFileManager.Save(_options.TargetFile, cfg);
 
             Console.WriteLine($"New config file {_options.TargetFile} generated with {cfg.Items.Count} items to process.");
         }

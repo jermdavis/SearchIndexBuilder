@@ -23,6 +23,9 @@ namespace SearchIndexBuilder.Processors.Setup
 
         [Option('o', "overwrite", Required = false, HelpText = "If the config file exists, should it be overwritten?")]
         public bool Overwrite { get; set; } = false;
+
+        [Option("timeout", Required = false, HelpText = "Allows you to specify a longer timeout for indexing operations. Expressed in seconds.")]
+        public int Timeout { get; set; } = 60;
     }
 
 }

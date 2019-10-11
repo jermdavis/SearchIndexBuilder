@@ -35,11 +35,11 @@ do this with the `Deploy` verb:
 
 The parameters are:
 
-* `-w` / `-website` (Required, string) : The Sitecore website's web root folder. This is where the endpoint file will be deployed to.
+* `-w` / `--website` (Required, string) : The Sitecore website's web root folder. This is where the endpoint file will be deployed to.
   Remember to put quotes around this string if it includes spaces. e.g. `-w "c:\inetpub\wwroot\mysite\Website"`
-* `-o` / `-overwrite` (Optional) : By default the tool will not overwrite an existing endpoint file if one is found. If you do want
+* `-o` / `--overwrite` (Optional) : By default the tool will not overwrite an existing endpoint file if one is found. If you do want
   to overwrite the existing file, add this parameter.
-* `-t` / `-token` (Optional, string) : To do anything, requests to the endpoint file must include a security token. By default a
+* `-t` / `--token` (Optional, string) : To do anything, requests to the endpoint file must include a security token. By default a
   random Guid will be used. But if you want to specify your own, then pass it with this parameter. Remember to use quotes if it includes
   spaces. The value used will be echoed to the screen, as you will need it in the next step. e.g. `-t MySuperSecretToken94!`
 
@@ -54,29 +54,54 @@ you want to, but the tool will generate it for you using the `Setup` verb.
 
 The parameters are:
 
-* `-u` / `-url` (Required, string) : The base url for the website you want the tool to talk to. It should be the web path that matches the
+* `-u` / `--url` (Required, string) : The base url for the website you want the tool to talk to. It should be the web path that matches the
   website folder you specified in the deploy step above. You do not need to specify the name of the endpoint file. That will be added by
   tool. e.g. `-u https://mysite.domain.com/`
-* `-d` / `-database` (Required, string) : The Sitecore database name that you want to extract item data from. When the tool generates the
+* `-d` / `--database` (Required, string) : The Sitecore database name that you want to extract item data from. When the tool generates the
   list of items to process it will use this for the query. e.g `-d web`
-* `-t` / `-token` (Required, string) : You must supply the same security token that you set up above when you deployed the endpoint. If you
+* `-t` / `--token` (Required, string) : You must supply the same security token that you set up above when you deployed the endpoint. If you
   you supplied your own you can just type it here. If you let the tool generate one, you will need to copy it from the output that the
   previous step generated. e.g. `-t MySuperSecretToken94!`
-* `-q` / `-query` (Optional, string) : By default, the tool will reindex all the items in the database you specify. If you omit this parameter the code
+* `-q` / `--query` (Optional, string) : By default, the tool will reindex all the items in the database you specify. If you omit this parameter the code
   will go directly to the underlying Items database table for maximum performance. If you specify a query then this will be run against the Sitecore
   database object for the database name you provided. That means that a query will have more of a performance hit on the target server. Take care when
   using this option, as a query like `\\*` will potentially process many thousands of items. e.g. `-q "/sitecore/Content/*//[@@templatename='Homepage']"`
-* `-c` / `-config` (Optional, string) : By default the tool will write the results of this operation to a file called `config.json` in the current folder.
+* `-c` / `--config` (Optional, string) : By default the tool will write the results of this operation to a file called `config.json` in the current folder.
   If you want to write to a different name or location, specify it with this parameter. e.g. `-c mySite.json`
-* `-o` / `-overwrite` (Optional) : By default the tool will not overwrite an existing config file if one is found. If you do want
+* `-o` / `--overwrite` (Optional) : By default the tool will not overwrite an existing config file if one is found. If you do want
   to overwrite the existing file, add this parameter.
+* `-t` / `--timeout` (Optional, integer) : The default timeout for HTTP operations with Sitecore is 60 seconds. You can specify a longer timeout (in seconds) using this flag.
 
 The config file will include all the Sitecore indexes defined on your site by default. If you only want to build certain indexes, use a text editor to
 remove the unwanted ones from the JSON data. Just remember not to break the format of the file.
 
+You can use the `-z` parameter from the global options below to change the file format at this point. The compressed formats are useful for large config files
+when you don't have a lot of disk space to play with, as the files tend to compress by 50-75%. However you cannot easily edit the files in these formats. If
+you want to make changes before running processing, use the `convert` verb instead.
+
+## Step 3.5: Converting the format of a config file
+
+If you want to convert a config file from one format to another, you can make use of the `convert` verb.
+
+`SearchIndexBuilder.exe convert -s <config file> -t <config file> -f <format>`
+
+The parameters are:
+
+* `-s` / `--source` (Required, string): The source config file to read in.
+* `-t` / `--target` (Required, string): The target config file to write out in the new format.
+* `-w` / `--writeformat` (Required, string): The format to use for the target config file. One of `Text`, `Archive` or `GZip`.
+* `-o` / `--overwrite` (Optional) : If the target config file exists, should it be overwritten?
+
+The code will try to determine the format of the source file using it's extension, or you can override this using the `-z` global option. The
+target file format is set by the `-w` parameter.
+
+This option exists to save disk space on constrained systems - as a zip/GZip stream will reduce a config file
+but as much as 75% in some cases. But it does this at the expense of performance, as it takes longer to reand and write these
+files due to the processing for compression.
+
 ## Step 3: Running an index build
 
-To start the process of re-indexing, you use the `Index` verb. This will take a config file created by the previous step, and process each of the content
+To start the process of re-indexing, you use the `index` verb. This will take a config file created by the previous step, and process each of the content
 items it specifies. Using the endpoint you've deployed, the tool will ask Sitecore to reindex each of the items, using each of the indexes
 you have specified. 
 
@@ -84,16 +109,16 @@ you have specified.
 
 The parameters are:
 
-* `-c` / `-config` (Optional, string) : The tool will try to load configuration from a file named `config.json` in the current directoy by default. If you want to use
+* `-c` / `--config` (Optional, string) : The tool will try to load configuration from a file named `config.json` in the current directoy by default. If you want to use
   a different config file, specifiy it with this parameter. e.g. `-c ..\testing\mySite.json`
-* `-o` / `-outputEvery` (Optional, integer) : The code tries to estimate the time remaining for the rebuild operation by using a rolling average over the last 50 items that
+* `-o` / `--outputEvery` (Optional, integer) : The code tries to estimate the time remaining for the rebuild operation by using a rolling average over the last 50 items that
   have been processed. This flag specifies how often the estimates should be displayed on the screen. It defaults to once every 10 items processed. e.g. `-o 35`
-* `-r` / `-retries` (Optional, integer) : If an indexing call to the endpoint returns an error (either because the endpoint could not be accessed, or because Sitecore returned
+* `-r` / `--retries` (Optional, integer) : If an indexing call to the endpoint returns an error (either because the endpoint could not be accessed, or because Sitecore returned
   an error) then the operation will be retried this number of times before the tool decides the error is permenant and moves on to the next item. The tool will back off an
   increasing amount after each error. The default value is five retries. e.g. `-r 10`
-* `-p` / `-pause` (Optional, integer) : If you want to lower the impact of the indexing process on your target server then you can use this
+* `-p` / `--pause` (Optional, integer) : If you want to lower the impact of the indexing process on your target server then you can use this
   parameter to add a pause between each item indexing request. The value is in milliseconds. e.g. `-p 250`
-* `-t` / `-timeout` (Optional, integer) : The default timeout for HTTP operations with Sitecore is 60 seconds. You can specify a longer timeout (in seconds) using this flag.
+* `-t` / `--timeout` (Optional, integer) : For convenience, you can override the timeout taken from the `setup` config above, with this optional parameter.
 
 You can stop the tool safely with `Ctrl-C`. It will finish its current operation, and then end. The current state (specifically what items are left to process, and what errors
 have been recorded - both transient and permenant) will be written to disk in the config file. The previous state of the config fill will be preserved in a backup file named with
@@ -105,6 +130,9 @@ to less than 1.25 times the size of the last backup written, the indexing job wi
 
 The updated config is also saved to disk when the tool finishes normally - giving a record of items which caused problems.
 
+You can use `-z` from the global options below to specify the file format to use. However the code will try and work out the correct format automatically,
+based on the file extension you specify.
+
 ## Step 4: Retrying errored items
 
 If you have a config file with errors recorded in it, and you want to re-process those items, you can use the `retry` verb to generate a new config file
@@ -115,9 +143,9 @@ the `index` verb.
 
 The parameters are:
 
-* `-s` / `-source` (Optional, string) : The config file you've already run, that you want to retry the errors from. Defaults to `config.json`. e.g. `-s currentSite.json`
-* `-t` / `-target` (Optional, string) : The new config file you want to save the results to. Defaults to `retry-config.json`. e.g. `-t "retry currentSite.json"`
-* `-o` / `-overwrite` (Optional) : If the target file exists, it can be overwritten if this flag is provided.
+* `-s` / `--source` (Optional, string) : The config file you've already run, that you want to retry the errors from. Defaults to `config.json`. e.g. `-s currentSite.json`
+* `-t` / `--target` (Optional, string) : The new config file you want to save the results to. Defaults to `retry-config.json`. e.g. `-t "retry currentSite.json"`
+* `-o` / `--overwrite` (Optional) : If the target file exists, it can be overwritten if this flag is provided.
 
 ## Step 5: Removing the endpoint
 
@@ -128,14 +156,17 @@ can do this for you with the `Remove` verb.
 
 The parameters are:
 
-* `-w` / `-website` (Required, string) : The Sitecore website's web root folder. This is where the endpoint file will be removed from.
+* `-w` / `--website` (Required, string) : The Sitecore website's web root folder. This is where the endpoint file will be removed from.
   Remember to put quotes around this string if it includes spaces. e.g. `-w "c:\inetpub\wwroot\mysite\Website"`
 
-## Other parameters
+## Global parameters
 
 The system also supports some global parameters, which will affect all of the verbs:
 
-* `-a` / `-attach` (Optional) : Causes the processing to pause between parsing the command line options and starting any processing.
-  This allows you to attach a debugger if you need to.
-* `-f` / `-fake` (Optional) : Makes the code use a "fake" object as the endpoint proxy class - allowing it to process some data without a
+* `-a` / `--attach` (Optional) : Causes the processing to pause between parsing the command line options and starting any processing.
+  This allows you to attach a debugger if you need to. It will wait for a keypress, or for the debugger to attach before proceeding with execution.
+* `-f` / `--fake` (Optional) : Makes the code use a "fake" object as the endpoint proxy class - allowing it to process some data without a
   connection to Sitecore being possible. It generates random results for whatever data is being processed.
+* `-z` / `--ziptype` (Optional) : Allows you to apply zip compression to the config files saved by the tool. The default option is `Text`
+  to save a raw text JSON file. You can also specify `GZip` to write a raw zip stream, or `Archive` to write a normal zip file containg
+  the config data. These options will add appropriate extensions to the config file specified.

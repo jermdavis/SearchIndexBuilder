@@ -21,6 +21,7 @@ namespace SearchIndexBuilder.EndpointProxies
     public class FakeEndpoint : ISitecoreEndpoint
     {
         private Random _rnd = new Random();
+        private int _itemsToCreate = 15;
 
         public IEnumerable<string> FetchDatabases(string token)
         {
@@ -34,14 +35,17 @@ namespace SearchIndexBuilder.EndpointProxies
 
         public IEnumerable<ItemEntry> FetchItemIds(string token, string database, string query)
         {
-            return new ItemEntry[] {
-                new ItemEntry() { Name="one", Id=Guid.NewGuid() },
-                new ItemEntry() { Name="two", Id=Guid.NewGuid() },
-                new ItemEntry() { Name="three", Id=Guid.NewGuid() },
-                new ItemEntry() { Name="four", Id=Guid.NewGuid() },
-                new ItemEntry() { Name="five", Id=Guid.NewGuid() },
-                new ItemEntry() { Name="six", Id=Guid.NewGuid() }
-            };
+            var items = new List<ItemEntry>();
+
+            for(int i=0; i<_itemsToCreate; i++)
+            {
+                items.Add(new ItemEntry(){
+                    Name = $"Item {i.ToString()}",
+                    Id = Guid.NewGuid()
+                });
+            }
+
+            return items;
         }
 
         public IndexResult IndexItem(string token, ItemEntry itm, string databaseName, IEnumerable<string> indexes, int timeout)
@@ -50,7 +54,7 @@ namespace SearchIndexBuilder.EndpointProxies
 
             int rnd = _rnd.Next(10);
 
-            if(itm.Name == "two")
+            if(itm.Name == "Item 2")
             {
                 return new IndexResult(new Activity[] { new Activity() { Index = "sitecore_test_index", Uri = "http://uri/test?2", Error = "Item two always fails internally", Messages = new string[] { "Thing one" } } });
             }

@@ -41,6 +41,7 @@ namespace SearchIndexBuilder.Processors.Setup
             cfg.Url = _options.Url;
             cfg.Database = _options.Database;
             cfg.Token = _options.Token;
+            cfg.Timeout = _options.Timeout;
 
             ISitecoreEndpoint endPoint = _endpointFactory.Create(_options.Url);
 
@@ -74,11 +75,10 @@ namespace SearchIndexBuilder.Processors.Setup
             }
 
             Console.Write("Saving config to disk...");
-            var cm = new ConfigFileManager();
-            cm.Save(_options.ConfigFile, cfg);
+            _configFileManager.Save(_options.ConfigFile, cfg);
 
             Console.WriteLine();
-            Console.WriteLine($"Config written to {_options.ConfigFile}");
+            Console.WriteLine($"Config written to {_configFileManager.VerifyFilename(_options.ConfigFile)}");
         }
     }
 

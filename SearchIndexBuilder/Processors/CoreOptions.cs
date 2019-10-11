@@ -13,6 +13,8 @@ namespace SearchIndexBuilder.Processors
 
         [Option('f', "fake", Required = false, HelpText = "Uses the a fake endpoint proxy - allowing the code to run without Sitecore, or a deployed endpoint")]
         public bool Fake { get; set; } = false;
-    }
 
+        [Option('z', "ziptype", Required = false, HelpText = "Control whether compression is applied to the config files saved")]
+        public ConfigFileTypes ConfigFileType { get; set; } = ConfigFileTypes.Text;
+    }
 }

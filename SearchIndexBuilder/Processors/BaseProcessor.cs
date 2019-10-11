@@ -12,10 +12,24 @@ namespace SearchIndexBuilder.Processors
     {
         protected T _options;
         protected ISitecoreEndpointFactory _endpointFactory;
+        protected IConfigFileManager _configFileManager;
 
         public BaseProcessor(T options)
         {
             _options = options;
+        }
+
+        public void OverrideFileType(string filename)
+        {
+            if(filename.EndsWith(GZipStreamConfigFileManager.FileExtension))
+            {
+                _configFileManager = new GZipStreamConfigFileManager();
+            }
+
+            if (filename.EndsWith(ZipArchiveConfigFileManager.FileExtension))
+            {
+                _configFileManager = new ZipArchiveConfigFileManager();
+            }
         }
 
         public virtual void Run()
@@ -23,8 +37,13 @@ namespace SearchIndexBuilder.Processors
             if (_options.Attach)
             {
                 Console.WriteLine("Pausing for debugger - press any key to continue...");
-                Console.ReadKey();
+                var dw = new DebuggerWaiter();
+                dw.Wait();
             }
+
+            _configFileManager = _options.ConfigFileType.Create(_configFileManager);
+
+            Console.WriteLine($"[Reading {_configFileManager.Extension} file format]");
 
             if(_options.Fake)
             {
