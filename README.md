@@ -77,7 +77,7 @@ remove the unwanted ones from the JSON data. Just remember not to break the form
 
 You can use the `-z` parameter from the global options below to change the file format at this point. The compressed formats are useful for large config files
 when you don't have a lot of disk space to play with, as the files tend to compress by 50-75%. However you cannot easily edit the files in these formats. If
-you want to make changes before running processing, use the `convert` verb.
+you want to make changes before running processing, use the `convert` verb instead.
 
 ## Step 3.5: Converting the format of a config file
 
@@ -93,7 +93,11 @@ The parameters are:
 * `-o` / `--overwrite` (Optional) : If the target config file exists, should it be overwritten?
 
 The code will try to determine the format of the source file using it's extension, or you can override this using the `-z` global option. The
-target file format is set by the `-f` parameter.
+target file format is set by the `-w` parameter.
+
+This option exists to save disk space on constrained systems - as a zip/GZip stream will reduce a config file
+but as much as 75% in some cases. But it does this at the expense of performance, as it takes longer to reand and write these
+files due to the processing for compression.
 
 ## Step 3: Running an index build
 
@@ -155,7 +159,7 @@ The parameters are:
 * `-w` / `--website` (Required, string) : The Sitecore website's web root folder. This is where the endpoint file will be removed from.
   Remember to put quotes around this string if it includes spaces. e.g. `-w "c:\inetpub\wwroot\mysite\Website"`
 
-## Other parameters
+## Global parameters
 
 The system also supports some global parameters, which will affect all of the verbs:
 
